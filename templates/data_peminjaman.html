@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Transaksi Peminjaman</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"
+    />
+    <!-- Tambahkan jsPDF Library -->
+    <script src="{{ url_for('static', filename='js/jspdf.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jspdf.plugin.autotable.min.js') }}"></script>
+
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h2>Transaksi Peminjaman</h2>
+      <!-- Input untuk pencarian -->
+      <div class="mb-3">
+        <input
+          type="text"
+          id="searchInput"
+          class="form-control"
+          placeholder="Cari berdasarkan NIK atau Nama"
+        />
+      </div>
+
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>ID Transaksi</th>
+            <th>Judul Buku</th>
+            <th>Nama Peminjam</th>
+            <th>Tanggal Peminjaman</th>
+            <th>Tanggal Pengembalian</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>The Great Gatsby</td>
+            <td>John Doe</td>
+            <td>2024-05-01</td>
+            <td>2024-05-08</td>
+            <!-- kalo status = denda, muncul link -->
+            <!-- <td>Dipinjam</td> -->
+            <td>
+              <a href="denda">Denda</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" id="previous">
+            <a class="page-link" href="#">Sebelumnya</a>
+          </li>
+          <li class="page-item" id="page1">
+            <button class="page-link btn btn-link">1</button>
+          </li>
+          <li class="page-item" id="page2">
+            <button class="page-link btn btn-link">2</button>
+          </li>
+          <li class="page-item" id="page3">
+            <button class="page-link btn btn-link">3</button>
+          </li>
+          <li class="page-item" id="next">
+            <a class="page-link" href="#">Selanjutnya</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </body>
+</html>

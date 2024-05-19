@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Library</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="fonts/font-awesome-4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="/static//font-awesome/css/font-awesome.min.css"
+    />
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px; /* Reduce font size */
+      }
+
+      th,
+      td {
+        padding: 8px; /* Reduce padding */
+      }
+
+      th {
+        text-align: center;
+      }
+      body {
+        background-image: url("/static//foto/antiquebooks.jpg");
+        background-size: cover;
+        margin: 0;
+        font-family: Tahoma, Verdana, sans-serif;
+      }
+
+      .library {
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        background-color: #343a40;
+        color: #fff;
+        padding-top: 20px;
+        min-width: 250px;
+      }
+
+      .sidebar .nav-link {
+        color: #fff;
+      }
+
+      .sidebar .nav-link:hover {
+        background-color: #495057;
+      }
+
+      .content {
+        padding: 20px;
+        flex-grow: 1;
+      }
+
+      .anotherwhitecolumn {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+        background-color: white;
+        padding: 50px;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="library">
+      <!-- Sidebar -->
+      <div class="sidebar d-flex flex-column">
+        <div class="sidebar-header text-center">
+          <h3>Library</h3>
+        </div>
+
+        <div class="text-center px-3 py-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <img
+                src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
+                class="rounded-circle mr-2"
+                style="width: 40px"
+                alt="Avatar"
+              />
+              <p class="mr-3">{{ username }}</p>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+          </div>
+        </div>
+        <ul class="nav flex-column nav-pills">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              id="dashboard"
+              data-toggle="pill"
+              href="#v-pills-dashboard"
+              role="tab"
+              aria-controls="v-pills-dashboard"
+              aria-selected="true"
+              >Dashboard</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="member"
+              data-toggle="pill"
+              href="#v-pills-member"
+              role="tab"
+              aria-controls="v-pills-member"
+              aria-selected="false"
+              >Koleksi Saya</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="listbook"
+              data-toggle="pill"
+              href="#v-pills-listbook"
+              role="tab"
+              aria-controls="v-pills-listbook"
+              aria-selected="false"
+              >Katalog Buku</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="transaction"
+              data-toggle="pill"
+              href="#v-pills-transaction"
+              role="tab"
+              aria-controls="v-pills-transaction"
+              aria-selected="false"
+              >Transaksi</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <div class="content">
+        <div class="anotherwhitecolumn">
+          <div class="tab-content" id="v-pills-tabContent">
+            <div
+              class="tab-pane fade show active"
+              id="v-pills-dashboard"
+              role="tabpanel"
+              aria-labelledby="dashboard"
+            >
+              <div>
+                <h2>Welcome, {{ username }}!</h2>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card bg-info text-white">
+                      <div class="card-body">
+                        <h5 class="card-title">Telah Meminjam</h5>
+                        <h3 class="card-text">3/5</h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card bg-success text-white">
+                      <div class="card-body">
+                        <h5 class="card-title">Harus Dikembalikan</h5>
+                        <h3 class="card-text">Judul Buku - Penulis</h3>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <hr class="my-2" />
+                <h3>Sedang Dibaca</h3>
+                <div class="d-flex justify-content-between align-items-center">
+                  <h4>Judul Buku - Penulis</h4>
+                  <h5>Tersisa 5 hari lagi</h5>
+                </div>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade"
+              id="v-pills-listbook"
+              role="tabpanel"
+              aria-labelledby="listbook"
+            >
+              <div>
+                <h2>Katalog Buku</h2>
+                <div class="table-responsive text-center">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Judul Buku</th>
+                        <th>Deskripsi</th>
+                        <th>Penulis</th>
+                        <th>Stok</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Judul Buku 1</td>
+                        <td>Deskripsi singkat buku 1.</td>
+                        <td>Penulis 1</td>
+                        <td><span class="badge badge-primary">5</span></td>
+                        <td>
+                          <button class="btn btn-sm btn-primary">Pinjam</button>
+                        </td>
+                      </tr>
+
+                      <!-- Add more rows for additional books as needed -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade"
+              id="v-pills-member"
+              role="tabpanel"
+              aria-labelledby="member"
+            >
+              <div>
+                <h2>Koleksi Saya</h2>
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Judul Buku</th>
+                        <th>Durasi Peminjaman</th>
+                        <th>Deskripsi</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Judul Buku 1</td>
+                        <td>
+                          <span class="badge badge-primary">10 hari</span>
+                        </td>
+                        <td>Deskripsi singkat buku 1.</td>
+                        <td>
+                          <button class="btn btn-danger">
+                            Kembalikan Buku
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Judul Buku 2</td>
+                        <td>
+                          <span class="badge badge-primary">10 hari</span>
+                        </td>
+                        <td>Deskripsi singkat buku 2.</td>
+                        <td>
+                          <button class="btn btn-danger">
+                            Kembalikan Buku
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Judul Buku 3</td>
+                        <td>
+                          <span class="badge badge-primary">10 hari</span>
+                        </td>
+                        <td>Deskripsi singkat buku 3.</td>
+                        <td>
+                          <button class="btn btn-danger">
+                            Kembalikan Buku
+                          </button>
+                        </td>
+                      </tr>
+                      <!-- Add more rows for additional books as needed -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="tab-pane fade"
+              id="v-pills-transaction"
+              role="tabpanel"
+              aria-labelledby="transaction"
+            >
+              <div>
+                <h2>Transaksi Peminjaman</h2>
+                <!-- Input untuk pencarian -->
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Cari berdasarkan Judul"
+                  />
+                </div>
+
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID Transaksi</th>
+                      <th>Judul Buku</th>
+                      <th>Tanggal Peminjaman</th>
+                      <th>Tanggal Pengembalian</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>The Great Gatsby</td>
+                      <td>2024-05-01</td>
+                      <td>2024-05-08</td>
+                      <!-- kalo status = denda, muncul link -->
+                      <!-- <td>Dipinjam</td> -->
+                      <td
+                        class="d-flex justify-content-between align-items-center"
+                      >
+                        Dipinjam
+                        <a class="btn btn-sm btn-secondary">
+                          <i class="fa fa-print" aria-hidden="true"></i
+                        ></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item" id="previous">
+                      <a class="page-link" href="#">Sebelumnya</a>
+                    </li>
+                    <li class="page-item" id="page1">
+                      <button class="page-link btn btn-link">1</button>
+                    </li>
+                    <li class="page-item" id="page2">
+                      <button class="page-link btn btn-link">2</button>
+                    </li>
+                    <li class="page-item" id="page3">
+                      <button class="page-link btn btn-link">3</button>
+                    </li>
+                    <li class="page-item" id="next">
+                      <a class="page-link" href="#">Selanjutnya</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

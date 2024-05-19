@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Library</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="fonts/font-awesome-4.7.0/css/font-awesome.min.css"
+    />
+    <link
+    rel="stylesheet"
+    href="/static//font-awesome/css/font-awesome.min.css"
+  />
+    <style>
+        table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px; /* Reduce font size */
+      }
+
+      th,
+      td {
+        padding: 8px; /* Reduce padding */
+      }
+
+      th {
+        text-align: center;
+      }
+      body {
+        background-image: url("/static//foto/antiquebooks.jpg");
+        background-size: cover;
+        margin: 0;
+        font-family: Tahoma, Verdana, sans-serif;
+      }
+
+      .library {
+        display: flex;
+        height: 100vh;
+      }
+
+      .sidebar {
+        background-color: #343a40;
+        color: #fff;
+        padding-top: 20px;
+        min-width: 250px;
+      }
+
+      .sidebar .nav-link {
+        color: #fff;
+      }
+
+      .sidebar .nav-link:hover {
+        background-color: #495057;
+      }
+
+      .content {
+        padding: 20px;
+        flex-grow: 1;
+      }
+
+      .anotherwhitecolumn {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+        background-color: white;
+        padding: 50px;
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+      }
+
+      .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="library">
+      <!-- Sidebar -->
+      <div class="sidebar d-flex flex-column">
+        <div class="sidebar-header text-center">
+          <h3>Library</h3>
+        </div>
+
+        <div class=" text-center px-3 py-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <img
+                src="https://mdbcdn.b-cdn.net/img/new/avatars/8.webp"
+                class="rounded-circle mr-2"
+                style="width: 40px"
+                alt="Avatar"
+              />
+              <p class="mr-3">{{ username }}</p>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+          </div>
+          </div>
+        <ul class="nav flex-column nav-pills">
+          
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              id="dashboard"
+              data-toggle="pill"
+              href="#v-pills-dashboard"
+              role="tab"
+              aria-controls="v-pills-dashboard"
+              aria-selected="true"
+              >Dashboard</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="listbook"
+              data-toggle="pill"
+              href="#v-pills-listbook"
+              role="tab"
+              aria-controls="v-pills-listbook"
+              aria-selected="false"
+              >Katalog Buku</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="member"
+              data-toggle="pill"
+              href="#v-pills-member"
+              role="tab"
+              aria-controls="v-pills-member"
+              aria-selected="false"
+              >Anggota Perpustakaan</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              id="transaction"
+              data-toggle="pill"
+              href="#v-pills-transaction"
+              role="tab"
+              aria-controls="v-pills-transaction"
+              aria-selected="false"
+              >Transaksi</a
+            >
+          </li>
+          
+        </ul>
+         <!-- Logout and Avatar -->
+ 
+      </div>
+
+      <div class="content">
+        <div class="anotherwhitecolumn">
+          <div class="tab-content" id="v-pills-tabContent">
+            <div
+              class="tab-pane fade show active"
+              id="v-pills-dashboard"
+              role="tabpanel"
+              aria-labelledby="dashboard"
+            >
+              <div>
+                <h2>Welcome, {{ username }}!</h2>
+                <hr class="my-4" />
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card bg-info text-white">
+                      <div class="card-body">
+                        <h5 class="card-title">Buku yang Dipinjam</h5>
+                        <p class="card-text">10</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="card bg-success text-white">
+                      <div class="card-body">
+                        <h5 class="card-title">Buku yang Dikembalikan</h5>
+                        <p class="card-text">10</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade"
+              id="v-pills-listbook"
+              role="tabpanel"
+              aria-labelledby="listbook"
+            >
+             
+              <div>
+                <div class="d-flex justify-content-between">
+                  <h2>Katalog Buku</h2>
+                <a href="/tambah_buku" class="btn btn-primary mb-3">Tambah Buku</a>
+              </div>
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Cari buku berdasarkan judul atau pengarang"
+                  />
+                </div>
+                
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Judul</th>
+                      <th>Pengarang</th>
+                      <th>Tahun</th>
+                      <th>Stok</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for book in books %}
+                    <tr>
+                      <td>{{ book.id }}</td>
+                      <td>{{ book.title }}</td>
+                      <td>{{ book.author }}</td>
+                      <td>{{ book.year }}</td>
+                      <td>{{ book.stock }}</td>
+                      <td>
+                        <a href="/edit" class="btn btn-primary"
+                          ><i class="fa fa-pencil-square-o" aria-hidden="true"></i
+                        ></a>
+            
+                        <a href="/delete_user/2" class="btn btn-danger"
+                          ><i class="fa fa-trash" aria-hidden="true"></i
+                        ></a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </table>
+            
+              <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+            </div>
+            </div>
+            <div
+              class="tab-pane fade"
+              id="v-pills-member"
+              role="tabpanel"
+              aria-labelledby="member"
+            >
+              <div>
+                <div class="d-flex justify-content-between">
+                  <h2>Daftar Anggota</h2>
+                  <a href="tambah" class="btn btn-primary mb-3" role="button"
+                    >Tambah Data</a
+                  >
+                </div>
+                <!-- Input untuk pencarian -->
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Cari berdasarkan NIK atau Nama"
+                  />
+                </div>
+          
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Nama Lengkap</th>
+                      <th>Email</th>
+                      <th>Username</th>
+                      <th>Tanggal Lahir</th>
+                      <th>Nomor Telepon</th>
+                      <th>Status</th>
+                      <th width="15%">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- {% for row in container %}
+                    <tr>
+                      <td>{{ row[0] }}</td>
+                      <td>{{ row[1] }}</td>
+                      <td>{{ row[2] }}</td>
+                      <td>{{ row[3].strftime('%d/%m/%Y') }}</td>
+                      <td>{{ row[4] }}</td>
+                      <td>{{ row[5] }}</td>
+                      <td style="text-align: right">{{ "{:,.2f}".format(row[6]) }}</td>
+                      <td>
+                        <div class="btn-group" role="group">
+                          <a
+                            href="#"
+                            class="btn btn-secondary print-btn"
+                            data-nik="{{ row[0] }}"
+                            >Print</a
+                          >
+                          <a
+                            href="http://localhost:5000/edit/{{row[0]}}"
+                            class="btn btn-warning"
+                            role="button"
+                            >Ubah</a
+                          >
+                          <a
+                            href="http://localhost:5000/hapus/{{row[0]}}"
+                            class="btn btn-danger"
+                            role="button"
+                            onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"
+                            >Hapus</a
+                          >
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %} -->
+                    <tr>
+                      <td>2</td>
+                      <td>Jane Smith</td>
+                      <td>jane@example.com</td>
+                      <td>janesmith</td>
+                      <td>1985-10-20</td>
+                      <td>0987654321</td>
+                      <td>Active</td>
+                      <td>
+                        <a href="/edit" class="btn btn-primary"
+                          ><i class="fa fa-pencil-square-o" aria-hidden="true"></i
+                        ></a>
+          
+                        <a href="/delete_user/2" class="btn btn-danger"
+                          ><i class="fa fa-trash" aria-hidden="true"></i
+                        ></a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+          
+                <!-- Pagination -->
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item" id="previous">
+                      <a class="page-link" href="#">Sebelumnya</a>
+                    </li>
+                    <li class="page-item" id="page1">
+                      <button class="page-link btn btn-link">1</button>
+                    </li>
+                    <li class="page-item" id="page2">
+                      <button class="page-link btn btn-link">2</button>
+                    </li>
+                    <li class="page-item" id="page3">
+                      <button class="page-link btn btn-link">3</button>
+                    </li>
+                    <li class="page-item" id="next">
+                      <a class="page-link" href="#">Selanjutnya</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+            <div
+              class="tab-pane fade"
+              id="v-pills-transaction"
+              role="tabpanel"
+              aria-labelledby="transaction"
+            >
+              <div>
+                <h2>Transaksi Peminjaman</h2>
+                <!-- Input untuk pencarian -->
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control"
+                    placeholder="Cari berdasarkan NIK atau Nama"
+                  />
+                </div>
+          
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID Transaksi</th>
+                      <th>Judul Buku</th>
+                      <th>Nama Peminjam</th>
+                      <th>Tanggal Peminjaman</th>
+                      <th>Tanggal Pengembalian</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>The Great Gatsby</td>
+                      <td>John Doe</td>
+                      <td>2024-05-01</td>
+                      <td>2024-05-08</td>
+                      <!-- kalo status = denda, muncul link -->
+                      <!-- <td>Dipinjam</td> -->
+                      <td>
+                        <a href="denda">Denda</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+          
+                <!-- Pagination -->
+                <nav aria-label="Page navigation example">
+                  <ul class="pagination justify-content-center">
+                    <li class="page-item" id="previous">
+                      <a class="page-link" href="#">Sebelumnya</a>
+                    </li>
+                    <li class="page-item" id="page1">
+                      <button class="page-link btn btn-link">1</button>
+                    </li>
+                    <li class="page-item" id="page2">
+                      <button class="page-link btn btn-link">2</button>
+                    </li>
+                    <li class="page-item" id="page3">
+                      <button class="page-link btn btn-link">3</button>
+                    </li>
+                    <li class="page-item" id="next">
+                      <a class="page-link" href="#">Selanjutnya</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

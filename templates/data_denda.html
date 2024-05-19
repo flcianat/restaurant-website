@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Informasi Denda Peminjaman Buku</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .book-info {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .book-info h3 {
+        margin-top: 0;
+      }
+      .book-info p {
+        margin: 5px 0;
+      }
+
+      .unpaid-status {
+        background-color: #f44336;
+        padding: 5px 10px;
+        display: inline-block;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Informasi Denda Peminjaman Buku</h2>
+
+    <div class="book-info">
+      <h3>The Great Gatsby</h3>
+      <p><strong>Tanggal Peminjaman:</strong> 10 Mei 2024</p>
+      <p><strong>Tanggal Pengembalian (max. 30 hari):</strong> 15 Juni 2024</p>
+      <p><strong>Jumlah Hari Terlambat:</strong> 10</p>
+      <p><strong>Denda:</strong> 10.000</p>
+      <h3 class="unpaid-status">Belum Lunas</h3>
+    </div>
+    <!-- Tambahkan div baru untuk setiap buku yang ingin ditampilkan -->
+  </body>
+</html>
