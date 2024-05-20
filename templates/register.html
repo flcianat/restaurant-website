@@ -9,79 +9,104 @@
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <style>
+      body,
+      html {
+        height: 100%;
+      }
+      .image-column {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      .image-column img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+    </style>
   </head>
   <body>
-    <div class="container mt-5">
-      <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4">
-          <h2 class="text-center">Register</h2>
-          <form action="/register" method="post">
-            <div class="form-group">
-              <label for="nama">Nama Lengkap:</label>
-              <input
-                type="text"
-                class="form-control"
-                id="nama"
-                name="nama"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="email">Email:</label>
-              <input
-                type="email"
-                class="form-control"
-                id="email"
-                name="email"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="username">Username:</label>
-              <input
-                type="text"
-                class="form-control"
-                id="username"
-                name="username"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="password">Password:</label>
-              <input
-                type="password"
-                class="form-control"
-                id="password"
-                name="password"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label for="tanggal_lahir">Tanggal Lahir:</label>
-              <input
-                type="date"
-                class="form-control"
-                id="tanggal_lahir"
-                name="tanggal_lahir"
-              />
-            </div>
-            <div class="form-group">
-              <label for="no_telp">Nomor Telepon:</label>
-              <input
-                type="text"
-                class="form-control"
-                id="no_telp"
-                name="no_telp"
-              />
-            </div>
-            <button type="submit" class="btn btn-success btn-block">
-              Create Account
-            </button>
-          </form>
+    <div class="container-fluid h-100">
+      <div class="row h-100">
+        <!-- Image Column -->
+        <div class="col-md-6 d-none d-md-flex image-column">
+          <img
+            src="https://img.freepik.com/free-vector/people-library-flat-vector-illustration_74855-6607.jpg"
+            alt="Library Image"
+          />
+        </div>
+        <!-- Form Column -->
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+          <div class="w-75">
+            <h2 class="mb-4 text-center">Register</h2>
+            <form method="post">
+              <div class="form-group">
+                <label for="nama">Nama Lengkap</label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="fullname"
+                  name="fullname"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                  type="password"
+                  class="form-control form-control-sm"
+                  id="password"
+                  name="password"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  class="form-control form-control-sm"
+                  id="email"
+                  name="email"
+                  required
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="tanggal_lahir">Tanggal Lahir</label>
+                  <input
+                    type="date"
+                    class="form-control form-control-sm"
+                    id="born"
+                    name="born"
+                    required
+                  />
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="notelp">No. Telepon</label>
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    id="phonenumber"
+                    name="phonenumber"
+                    required
+                  />
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-sm">
+                Create Account
+              </button>
+              <p class="text-center mt-3">
+                Already have an account? <a href="login">Login</a>
+              </p>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

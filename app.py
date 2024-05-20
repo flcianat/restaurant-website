@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, session, url_for
 import pymysql.cursors, os
 import datetime
 from flask import jsonify
-
+import uuid
+import secrets
+import string
 
 application = Flask(__name__)
 
@@ -13,7 +15,7 @@ application.secret_key = "your_secret_key_here"
 #fungsi koneksi ke basis data
 def openDb():
     global conn, cursor
-    conn = pymysql.connect(db="db_pegawai", user="root", passwd="",host="localhost",port=3306,autocommit=True)
+    conn = pymysql.connect(db="db_perpus", user="root", passwd="",host="localhost",port=3306,autocommit=True)
     cursor = conn.cursor()	
 
 #fungsi menutup koneksi
@@ -35,49 +37,75 @@ books = [
     {"id": 3, "title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960,"stock":2}
 ]
 
+
+def generate_id(cursor):
+    while True:
+        # Generate a random combination of letters and numbers with a length of 5 characters
+        random_combination = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(5))
+        cursor.execute('SELECT COUNT(*) FROM anggota WHERE id=%s', (random_combination,))
+        count = cursor.fetchone()[0]
+        if count == 0:
+            return random_combination
+
 @application.route('/login', methods=['GET','POST'])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
+        email = request.form["email"]
         password = request.form["password"]
-        if username == "admin" and password == "passadmin":
+
+        openDb()
+
+        if email == "admin@gmail.com" and password == "admin123":
             session["logged_in"] = True
-            session["username"] = username
+            session["email"] = email
             return redirect(url_for("admin"))
-        elif username in users and users[username] == password:
-            session["logged_in"] = True
-            session["username"] = username
-            return redirect(url_for("user"))
+        
+        cursor.execute('SELECT * FROM anggota WHERE email=%s AND password=%s', (email, password))
+        user = cursor.fetchone()
+
+        if user:
+            session['logged_in'] = user[0] 
+            session['email'] = user[1]    
+            return redirect(url_for('user'))
         else:
+            closeDb() 
             return render_template("index.html", message="Invalid username or password.")
     return render_template("index.html")
 
-
-@application.route('/register', methods=['GET','POST'])
+@application.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == "POST":
-        username = request.form["username"]
+        fullname = request.form["fullname"]
         password = request.form["password"]
-        if username in users and users[username] == password:
-            session["logged_in"] = True
-            session["username"] = username
-            return redirect(url_for("dashboard"))
+        email = request.form["email"]
+        born = request.form["born"]
+        phonenumber = request.form["phonenumber"]
+        status = "Active"
+
+        openDb()
+        id = generate_id(cursor)
+        sql = "INSERT INTO anggota (fullname, password, email, born, phonenumber, status, id) VALUES (%s, %s,%s, %s, %s, %s,%s)"
+        val = (fullname, password, email, born, phonenumber, status, id)
+        cursor.execute(sql, val)
+        conn.commit()
+        closeDb()
+        return redirect(url_for('user'))
     return render_template("register.html")
 
 
 @application.route("/admin")
 def admin():
     if "logged_in" in session and session["logged_in"]:
-        return render_template("admin.html", username=session["username"], books=books)
+        return render_template("admin.html", email=session["email"], books=books)
     else:
         return redirect(url_for("index"))
     
 @application.route("/user")
 def user():
     if "logged_in" in session and session["logged_in"]:
-        return render_template("user.html", username=session["username"], books=books)
+        return render_template("user.html", email=session["email"], books=books)
     else:
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
 
 @application.route("/buku")
 def buku():
@@ -197,34 +225,33 @@ def tambah():
     generated_nik = generate_nik()  # Memanggil fungsi untuk mendapatkan NIK otomatis
 
     if request.method == 'POST':
-        nik = request.form['nik']
-        nama = request.form['nama']
-        alamat = request.form['alamat']
-        tgllahir = request.form['tgllahir']
-        jeniskelamin = request.form['jeniskelamin']
-        status = request.form['status']
-        gaji = request.form['gaji']
-        foto = request.form['nik']
+        fullname = request.form["fullname"]
+        password = request.form["password"]
+        email = request.form["email"]
+        born = request.form["born"]
+        phonenumber = request.form["phonenumber"]
+        status = "Active"
 
-        # Pastikan direktori upload ada
-        if not os.path.exists(UPLOAD_FOLDER):
-            os.makedirs(UPLOAD_FOLDER)
+        # # Pastikan direktori upload ada
+        # if not os.path.exists(UPLOAD_FOLDER):
+        #     os.makedirs(UPLOAD_FOLDER)
 
-        # Simpan foto dengan nama NIK
-        if 'foto' in request.files:
-            foto = request.files['foto']
-            if foto.filename != '':
-                foto.save(os.path.join(application.config['UPLOAD_FOLDER'], f"{nik}.jpg"))
+        # # Simpan foto dengan nama NIK
+        # if 'foto' in request.files:
+        #     foto = request.files['foto']
+        #     if foto.filename != '':
+        #         foto.save(os.path.join(application.config['UPLOAD_FOLDER'], f"{nik}.jpg"))
 
         openDb()
-        sql = "INSERT INTO pegawai (nik,nama,alamat,tgllahir,jeniskelamin,status,gaji,foto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-        val = (nik,nama,alamat,tgllahir,jeniskelamin,status,gaji,foto)
+        id = generate_id(cursor)
+        sql = "INSERT INTO anggota (fullname, password, email, born, phonenumber, status, id) VALUES (%s, %s,%s, %s, %s, %s,%s)"
+        val = (fullname, password, email, born, phonenumber, status, id)
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-        return redirect(url_for('index'))        
+        return redirect(url_for('admin'))      
     else:
-        return render_template('tambah.html', nik=generated_nik)  # Mengirimkan NIK otomatis ke template
+        return render_template('tambah.html')  # Mengirimkan NIK otomatis ke template
     
 #fungsi view edit() untuk form edit data
 @application.route('/edit/<nik>', methods=['GET','POST'])
@@ -286,7 +313,7 @@ def get_employee_data(nik):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  password='',  # Password Anda (jika ada)
-                                 db='db_pegawai',
+                                 db='db_perpus',
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
 
