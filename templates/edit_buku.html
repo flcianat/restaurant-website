@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Buku</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://img.freepik.com/premium-photo/engaging-curriculum-fostering-knowledge_810293-83134.jpg?w=740'); /* Replace 'your-background-image-url.jpg' with your image URL */
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 1); 
+            padding: 20px;
+            border-radius: 10px;    
+            margin-top: 100px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Edit Buku</h1>
+        <form method="POST">
+            <input type="hidden" name="id" value="{{ book[0] }}">
+            <div class="form-group">
+                <label for="judul">Judul:</label>
+                <input type="text" class="form-control" id="judul" name="judul" value="{{ book[1] }}">
+            </div>
+            <div class="form-group">
+                <label for="penulis">Penulis:</label>
+                <input type="text" class="form-control" id="penulis" name="penulis" value="{{ book[2] }}">
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="tahun">Tahun:</label>
+                        <input type="text" class="form-control" id="tahun" name="tahun" value="{{ book[3] }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select class="form-control" id="status" name="status">
+                            <option value="Tersedia" {% if book[4] == 'Tersedia' %} selected {% endif %}>Tersedia</option>
+                            <option value="Tidak Tersedia" {% if book[4] == 'Tidak Tersedia' %} selected {% endif %}>Tidak Tersedia</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="stok">Stok:</label>
+                        <input type="number" class="form-control" id="stok" name="stok" value="{{ book[5] }}">
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and jQuery (optional, if needed) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

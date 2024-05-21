@@ -4,17 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Buku</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('https://img.freepik.com/premium-photo/engaging-curriculum-fostering-knowledge_810293-83134.jpg?w=740'); /* Replace 'your-background-image-url.jpg' with your image URL */
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 1); /* Set container background color with opacity */
+            padding: 20px;
+            border-radius: 10px;    
+            margin-top: 100px; /* Adjust margin-top as needed */
+        }
+    </style>
 </head>
 <body>
-    <h1>Tambah Buku Baru</h1>
-    <form method="POST">
-        <label for="title">Judul:</label>
-        <input type="text" id="title" name="title"><br>
-        <label for="author">Penulis:</label>
-        <input type="text" id="author" name="author"><br>
-        <label for="year">Tahun Terbit:</label>
-        <input type="text" id="year" name="year"><br>
-        <button type="submit">Tambah</button>
-    </form>
+    <div class="container mt-5">
+        <h1 class="mb-4">Tambah Buku Baru</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="title">Judul</label>
+                <input type="text" class="form-control" id="title" name="title">
+            </div>
+            <div class="form-group">
+                <label for="author">Pengarang</label>
+                <input type="text" class="form-control" id="author" name="author">
+            </div>
+            <div class="form-group">
+                <label for="year">Tahun</label>
+                <input type="text" class="form-control" id="year" name="year">
+            </div>
+            <div class="form-group">
+                <label for="year">Stok</label>
+                <input type="number" class="form-control" id="stok" name="stok">
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <a href="admin.html" class="btn btn-secondary">Batal</a>
+                <button type="submit" class="btn btn-primary ml-1">Tambah</button>
+            </div>
+          
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and jQuery (optional, if needed) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

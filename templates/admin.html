@@ -10,14 +10,16 @@
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
     <link
-      rel="stylesheet"
+      rel="stylesheet"  
       href="fonts/font-awesome-4.7.0/css/font-awesome.min.css"
     />
     <link
     rel="stylesheet"
     href="/static//font-awesome/css/font-awesome.min.css"
   />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+      
         table {
         width: 100%;
         border-collapse: collapse;
@@ -26,14 +28,14 @@
 
       th,
       td {
-        padding: 8px; /* Reduce padding */
+        padding: 8px;
       }
 
       th {
         text-align: center;
       }
       body {
-        background-image: url("/static//foto/antiquebooks.jpg");
+        background-image: url("/static//foto/bg-lib.avif");
         background-size: cover;
         margin: 0;
         font-family: Tahoma, Verdana, sans-serif;
@@ -213,13 +215,14 @@
                   />
                 </div>
                 
-                <table class="table">
+                <table class="table table-bordered table-hover">
                   <thead>
                     <tr>
                       <th>ID</th>
                       <th>Judul</th>
                       <th>Pengarang</th>
                       <th>Tahun</th>
+                      <th>Status</th>
                       <th>Stok</th>
                       <th>Aksi</th>
                     </tr>
@@ -227,20 +230,26 @@
                   <tbody>
                     {% for book in books %}
                     <tr>
-                      <td>{{ book.id }}</td>
-                      <td>{{ book.title }}</td>
-                      <td>{{ book.author }}</td>
-                      <td>{{ book.year }}</td>
-                      <td>{{ book.stock }}</td>
-                      <td>
-                        <a href="/edit" class="btn btn-primary"
-                          ><i class="fa fa-pencil-square-o" aria-hidden="true"></i
-                        ></a>
-            
-                        <a href="/delete_user/2" class="btn btn-danger"
-                          ><i class="fa fa-trash" aria-hidden="true"></i
-                        ></a>
-                      </td>
+                      <td>{{ book[0] }}</td>
+                      <td>{{ book[1] }}</td>
+                      <td>{{ book[2] }}</td>
+                      <td>{{ book[3] }}</td>
+                      <td>{{ book[4] }}</td>
+                      <td>{{ book[5] }}</td>
+                      <td class="d-flex justify-content-between">
+                        <a href="/edit_buku/{{ book[0] }}" class="btn btn-primary">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                        </a>
+                        
+                        <a href="/delete_buku/{{ book[0] }}" class="btn btn-danger">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                    
+                        <a href="#" class="btn btn-secondary">
+                            <i class="fa fa-print" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                    
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -271,9 +280,6 @@
               <div>
                 <div class="d-flex justify-content-between">
                   <h2>Daftar Anggota</h2>
-                  <a href="tambah" class="btn btn-primary mb-3" role="button"
-                    >Tambah Data</a
-                  >
                 </div>
                 <!-- Input untuk pencarian -->
                 <div class="mb-3">
@@ -289,68 +295,48 @@
                   <thead>
                     <tr>
                       <th>ID</th>
-                      <th>Nama Lengkap</th>
+                      <th>Nama</th>
                       <th>Email</th>
-                      <th>Username</th>
-                      <th>Tanggal Lahir</th>
-                      <th>Nomor Telepon</th>
+                      <th>Password</th>
+                      <th>Tgl. Lahir</th>
+                      <th>No. Telepon</th>
                       <th>Status</th>
                       <th width="15%">Aksi</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <!-- {% for row in container %}
+                    {% for row in container %}
                     <tr>
                       <td>{{ row[0] }}</td>
                       <td>{{ row[1] }}</td>
                       <td>{{ row[2] }}</td>
-                      <td>{{ row[3].strftime('%d/%m/%Y') }}</td>
-                      <td>{{ row[4] }}</td>
+                      <td>{{ row[3] }}</td>
+                      <td>{{ row[4].strftime('%d/%m/%Y') }}</td>
                       <td>{{ row[5] }}</td>
-                      <td style="text-align: right">{{ "{:,.2f}".format(row[6]) }}</td>
-                      <td>
-                        <div class="btn-group" role="group">
-                          <a
-                            href="#"
-                            class="btn btn-secondary print-btn"
-                            data-nik="{{ row[0] }}"
-                            >Print</a
-                          >
-                          <a
-                            href="http://localhost:5000/edit/{{row[0]}}"
-                            class="btn btn-warning"
-                            role="button"
-                            >Ubah</a
-                          >
-                          <a
-                            href="http://localhost:5000/hapus/{{row[0]}}"
-                            class="btn btn-danger"
-                            role="button"
-                            onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"
-                            >Hapus</a
-                          >
-                        </div>
-                      </td>
+                      <td>{{ row[6] }}</td>
+                      <td class="d-flex justify-content-between">
+                        <a href="/edit/{{ row[0] }}" class="btn-sm btn-primary">
+                            <i class="fa fa-pencil-square-o fa-sm" aria-hidden="true"></i>
+                        </a>
+
+                        {% if row[6] == 'Aktif' %}
+                        <a href="#" class="btn-sm btn-success disabled" tabindex="-1" role="button" aria-disabled="true">
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </a>
+                    {% else %}
+                        <a href="/hapus/{{ row[0] }}" class="btn-sm btn-danger">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                      </a>
+                    
+                        <a href="#" data-nik="{{ row[0] }}" class="btn-sm btn-secondary">
+                            <i class="fa fa-print fa-sm" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                    
                     </tr>
-                    {% endfor %} -->
-                    <tr>
-                      <td>2</td>
-                      <td>Jane Smith</td>
-                      <td>jane@example.com</td>
-                      <td>janesmith</td>
-                      <td>1985-10-20</td>
-                      <td>0987654321</td>
-                      <td>Active</td>
-                      <td>
-                        <a href="/edit" class="btn btn-primary"
-                          ><i class="fa fa-pencil-square-o" aria-hidden="true"></i
-                        ></a>
-          
-                        <a href="/delete_user/2" class="btn btn-danger"
-                          ><i class="fa fa-trash" aria-hidden="true"></i
-                        ></a>
-                      </td>
-                    </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
           
@@ -394,7 +380,7 @@
                   />
                 </div>
           
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered">
                   <thead>
                     <tr>
                       <th>ID Transaksi</th>
@@ -403,21 +389,27 @@
                       <th>Tanggal Peminjaman</th>
                       <th>Tanggal Pengembalian</th>
                       <th>Status</th>
+                      <th>Denda</th>
                     </tr>
                   </thead>
                   <tbody>
+                    {% for list in transaksi %}
                     <tr>
-                      <td>1</td>
-                      <td>The Great Gatsby</td>
-                      <td>John Doe</td>
-                      <td>2024-05-01</td>
-                      <td>2024-05-08</td>
-                      <!-- kalo status = denda, muncul link -->
-                      <!-- <td>Dipinjam</td> -->
+                      <td>{{ list[0] }}</td>
+                      <td>{{ list[1] }}</td>
+                      <td>{{ list[2] }}</td>
+                      <td>{{ list[3] }}</td>
+                      <td>{{ list[4] }}</td>
+                      <td>{{ list[5] }}</td>
                       <td>
-                        <a href="denda">Denda</a>
+                        {% if list[6] %}
+                        <div class="text-center">
+                        <a href="#"> <i class="fas fa-info-circle text-danger"></i></a>
+                      </div>
+                    {% endif %}
                       </td>
                     </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
           

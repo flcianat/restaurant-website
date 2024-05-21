@@ -12,40 +12,26 @@ conn = cursor = None
 
 application.secret_key = "your_secret_key_here"
 
-#fungsi koneksi ke basis data
 def openDb():
     global conn, cursor
     conn = pymysql.connect(db="db_perpus", user="root", passwd="",host="localhost",port=3306,autocommit=True)
     cursor = conn.cursor()	
 
-#fungsi menutup koneksi
 def closeDb():
     global conn, cursor
     cursor.close()
     conn.close()
 
+# books = [
+#     {"id": 1, "title": "Harry Potter", "author": "J.K. Rowling", "year": 1997, "stock":2},
+#     {"id": 2, "title": "Lord of the Rings", "author": "J.R.R. Tolkien", "year": 1954,"stock":2},
+#     {"id": 3, "title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960,"stock":2}
+# ]
 
-#fungsi view index() untuk menampilkan data dari basis data
-users = {
-    'user1': 'password1',
-    'user2': 'password2'
-}
-
-books = [
-    {"id": 1, "title": "Harry Potter", "author": "J.K. Rowling", "year": 1997, "stock":2},
-    {"id": 2, "title": "Lord of the Rings", "author": "J.R.R. Tolkien", "year": 1954,"stock":2},
-    {"id": 3, "title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960,"stock":2}
-]
-
-
-def generate_id(cursor):
-    while True:
-        # Generate a random combination of letters and numbers with a length of 5 characters
-        random_combination = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(5))
-        cursor.execute('SELECT COUNT(*) FROM anggota WHERE id=%s', (random_combination,))
-        count = cursor.fetchone()[0]
-        if count == 0:
-            return random_combination
+def generate_random_id(length):
+    characters = string.ascii_letters + string.digits
+    random_id = ''.join(random.choice(characters) for _ in range(length))
+    return random_id
 
 @application.route('/login', methods=['GET','POST'])
 def login():
@@ -55,7 +41,7 @@ def login():
 
         openDb()
 
-        if email == "admin@gmail.com" and password == "admin123":
+        if email == "admin@gmail.com" and password == "admin":
             session["logged_in"] = True
             session["email"] = email
             return redirect(url_for("admin"))
@@ -92,11 +78,46 @@ def register():
         return redirect(url_for('user'))
     return render_template("register.html")
 
+def fetch_anggota():
+    openDb()
+    container = []
+    sql = "SELECT * FROM anggota;"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    for data in results:
+        container.append(data)
+    closeDb()
+    return container
+
+def fetch_buku():
+    openDb()
+    books = []
+    sql = "SELECT * FROM buku;"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    for data in results:
+        books.append(data)
+    closeDb()
+    return books
+
+def fetch_transaksi():
+    openDb()
+    all_transaksi = []
+    sql = "SELECT * FROM transaksi;"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    for data in results:
+        all_transaksi.append(data)
+    closeDb()
+    return all_transaksi
 
 @application.route("/admin")
 def admin():
+    container = fetch_anggota()
+    books = fetch_buku()
+    transaksi =fetch_transaksi()
     if "logged_in" in session and session["logged_in"]:
-        return render_template("admin.html", email=session["email"], books=books)
+        return render_template("admin.html", email=session["email"], container=container, books=books, transaksi=transaksi)
     else:
         return redirect(url_for("index"))
     
@@ -106,23 +127,6 @@ def user():
         return render_template("user.html", email=session["email"], books=books)
     else:
         return redirect(url_for("login"))
-
-@application.route("/buku")
-def buku():
-    return render_template("buku.html",books=books)
-
-
-@application.route("/user/koleksi-saya")
-def koleksi_saya():
-    return render_template("/user/koleksi.html")
-
-@application.route("/user/katalog-buku")
-def katalog_buku():
-    return render_template("/user/buku.html")
-
-@application.route("/peminjaman")
-def peminjaman():
-    return render_template("data_peminjaman.html")
 
 @application.route("/denda")
 def denda():
@@ -134,17 +138,18 @@ def tambah_buku():
         title = request.form['title']
         author = request.form['author']
         year = request.form['year']
-        # Generate ID baru
-        new_id = max([book['id'] for book in books]) + 1
+        stok = request.form['stok']
+
+        status = "Tersedia"  
+        new_id = generate_random_id
 
         openDb()
-        sql = "INSERT INTO books (title, author, year) VALUES (%s, %s, %s)"
-        val = (title, author, year)
+        sql = "INSERT INTO buku (id, judul, penulis, tahun, status, stok) VALUES (%s,%s, %s, %s, %s, %s)"
+        val = (new_id,title, author, year, status, stok)
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-        # books.append({"id": new_id, "title": title, "author": author, "year": year})
-        return redirect(url_for('buku'))
+        return redirect(url_for('admin'))
     return render_template('tambah_buku.html')
 
 @application.route("/logout")
@@ -152,33 +157,6 @@ def logout():
     session.pop("logged_in", None)
     session.pop("username", None)
     return redirect(url_for("login"))
-
-
-@application.route('/data_user')
-def data_user():   
-    openDb()
-    container = []
-    sql = "SELECT * FROM pegawai ORDER BY NIK DESC;"
-    cursor.execute(sql)
-    results = cursor.fetchall()
-    for data in results:
-        container.append(data)
-    closeDb()
-    return render_template('data_user.html', container=container,)
-
-@application.route('/data_anggota')
-def data_anggota():   
-    openDb()
-    container = []
-    sql = "SELECT * FROM pegawai ORDER BY NIK DESC;"
-    cursor.execute(sql)
-    results = cursor.fetchall()
-    for data in results:
-        container.append(data)
-    closeDb()
-    return render_template('data_anggota.html', container=container,)
-
-
 
 #fungsi membuat NIK otomatis
 def generate_nik():
@@ -188,16 +166,12 @@ def generate_nik():
     current_year = datetime.datetime.now().year
     current_month = datetime.datetime.now().month
     
-    # Mengambil empat digit terakhir dari tahun
     year_str = str(current_year).zfill(2)
     
-    # Mengambil dua digit dari bulan
     current_month_str = str(current_month).zfill(2)
 
-    # Membuat format NIK tanpa nomor urut terlebih dahulu
     base_nik_without_number = f"P-{year_str}{current_month_str}"
 
-    # Mencari NIK terakhir dari database untuk mendapatkan nomor urut
     cursor.execute("SELECT nik FROM pegawai WHERE nik LIKE %s ORDER BY nik DESC LIMIT 1", (f"{base_nik_without_number}%",))
     last_nik = cursor.fetchone()
 
@@ -215,96 +189,84 @@ def generate_nik():
     
     return next_nik
 
-#fungsi untuk menyimpan lokasi foto
-UPLOAD_FOLDER = '/web_pegawai/crud/static/foto/'
-application.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-#fungsi view tambah() untuk membuat form tambah data
-@application.route('/tambah', methods=['GET','POST'])
-def tambah():
-    generated_nik = generate_nik()  # Memanggil fungsi untuk mendapatkan NIK otomatis
-
+@application.route('/edit_buku/<int:id>', methods=['GET', 'POST'])
+def edit_buku(id):
     if request.method == 'POST':
-        fullname = request.form["fullname"]
-        password = request.form["password"]
-        email = request.form["email"]
-        born = request.form["born"]
-        phonenumber = request.form["phonenumber"]
-        status = "Active"
-
-        # # Pastikan direktori upload ada
-        # if not os.path.exists(UPLOAD_FOLDER):
-        #     os.makedirs(UPLOAD_FOLDER)
-
-        # # Simpan foto dengan nama NIK
-        # if 'foto' in request.files:
-        #     foto = request.files['foto']
-        #     if foto.filename != '':
-        #         foto.save(os.path.join(application.config['UPLOAD_FOLDER'], f"{nik}.jpg"))
-
-        openDb()
-        id = generate_id(cursor)
-        sql = "INSERT INTO anggota (fullname, password, email, born, phonenumber, status, id) VALUES (%s, %s,%s, %s, %s, %s,%s)"
-        val = (fullname, password, email, born, phonenumber, status, id)
-        cursor.execute(sql, val)
-        conn.commit()
-        closeDb()
-        return redirect(url_for('admin'))      
-    else:
-        return render_template('tambah.html')  # Mengirimkan NIK otomatis ke template
-    
-#fungsi view edit() untuk form edit data
-@application.route('/edit/<nik>', methods=['GET','POST'])
-def edit(nik):
-    openDb()
-    cursor.execute('SELECT * FROM pegawai WHERE nik=%s', (nik))
-    data = cursor.fetchone()
-    if request.method == 'POST':
-        nik = request.form['nik']
-        nama = request.form['nama']
-        alamat = request.form['alamat']
-        tgllahir = request.form['tgllahir']
-        jeniskelamin = request.form['jeniskelamin']
+        # Retrieve form data
+        judul = request.form['judul']
+        penulis = request.form['penulis']
+        tahun = request.form['tahun']
         status = request.form['status']
-        gaji = request.form['gaji']
-        foto = request.form['nik']
-
-        path_to_photo = os.path.join(application.root_path, '/web_pegawai/crud/static/foto', f'{nik}.jpg')
-        if os.path.exists(path_to_photo):
-            os.remove(path_to_photo)
-
-        # Pastikan direktori upload ada
-        if not os.path.exists(UPLOAD_FOLDER):
-            os.makedirs(UPLOAD_FOLDER)
-
-        # Simpan foto dengan nama NIK
-        if 'foto' in request.files:
-            foto = request.files['foto']
-            if foto.filename != '':
-                foto.save(os.path.join(application.config['UPLOAD_FOLDER'], f"{nik}.jpg"))
-        sql = "UPDATE pegawai SET nama=%s, alamat=%s, tgllahir=%s, jeniskelamin=%s, status=%s, gaji=%s, foto=%s WHERE nik=%s"
-        val = (nama, alamat, tgllahir,jeniskelamin, status, gaji, foto, nik)
+        stok = request.form['stok']
+        
+        openDb()
+    
+        sql = "UPDATE buku SET judul = %s, penulis = %s, tahun = %s, status = %s, stok = %s WHERE id = %s"
+        val = (judul, penulis, tahun, status, stok, id)
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-        return redirect(url_for('index'))
-    else:
-        closeDb()
-        return render_template('edit.html', data=data)
-
-#fungsi menghapus data
-@application.route('/hapus/<nik>', methods=['GET','POST'])
-def hapus(nik):
+        return redirect(url_for('admin'))
     openDb()
-    cursor.execute('DELETE FROM pegawai WHERE nik=%s', (nik,))
-    # Hapus foto berdasarkan NIK
-    path_to_photo = os.path.join(application.root_path, '/web_pegawai/crud/static/foto', f'{nik}.jpg')
-    if os.path.exists(path_to_photo):
-        os.remove(path_to_photo)
+    sql = "SELECT * FROM buku WHERE id = %s"
+    cursor.execute(sql, (id,))
+    book = cursor.fetchone()
+    closeDb()
+    return render_template('edit_buku.html', book=book)
 
+@application.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_user(id):
+    if request.method == 'POST':
+        # Retrieve form data
+        fullname = request.form['fullname']
+        email = request.form['email']
+        password = request.form['password']
+        born = request.form['born']
+        phonenumber = request.form['phonenumber']
+        status = request.form['status']
+        
+        openDb()
+        
+        # Update the user record in the database
+        sql = "UPDATE anggota SET fullname = %s, email = %s, password = %s, born = %s, phonenumber = %s, status = %s WHERE id = %s"
+        val = (fullname, email, password, born, phonenumber, status, id)
+        cursor.execute(sql, val)
+        conn.commit()
+        
+        closeDb()
+        
+        # Redirect to the admin page after updating
+        return redirect(url_for('admin'))
+    
+    # If it's a GET request, retrieve the user details based on the provided ID
+    openDb()
+    sql = "SELECT * FROM anggota WHERE id = %s"
+    cursor.execute(sql, (id,))
+    user = cursor.fetchone()
+    closeDb()
+    
+    # Render the edit user form with the user details
+    return render_template('edit.html', user=user)
+
+
+@application.route('/delete_buku/<int:id>', methods=['GET','POST'])
+def delete_buku(id):
+    openDb()
+    sql = "DELETE FROM buku WHERE id = %s"
+    cursor.execute(sql, (id,))
     conn.commit()
     closeDb()
-    return redirect(url_for('index'))
+    return redirect(url_for('admin'))
+
+@application.route('/hapus/<int:id>', methods=['GET','POST'])
+def hapus(id):
+    openDb()
+    sql = "DELETE FROM anggota WHERE id = %s"
+    cursor.execute(sql, (id,))
+    conn.commit()
+    closeDb()
+    return redirect(url_for('admin'))
 
 #fungsi cetak ke PDF
 @application.route('/get_employee_data/<nik>', methods=['GET'])
