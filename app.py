@@ -5,6 +5,8 @@ from flask import jsonify
 import uuid
 import secrets
 import string
+from datetime import datetime
+
 
 application = Flask(__name__)
 
@@ -113,11 +115,12 @@ def fetch_transaksi():
 
 @application.route("/admin")
 def admin():
+    current_date = datetime.now().strftime('%Y-%m-%d')
     container = fetch_anggota()
     books = fetch_buku()
     transaksi =fetch_transaksi()
     if "logged_in" in session and session["logged_in"]:
-        return render_template("admin.html", email=session["email"], container=container, books=books, transaksi=transaksi)
+        return render_template("admin.html", email=session["email"], container=container, books=books, transaksi=transaksi, current_date=current_date)
     else:
         return redirect(url_for("index"))
     
@@ -269,8 +272,8 @@ def hapus(id):
     return redirect(url_for('admin'))
 
 #fungsi cetak ke PDF
-@application.route('/get_employee_data/<nik>', methods=['GET'])
-def get_employee_data(nik):
+@application.route('/get_employee_data/<int:id>', methods=['GET'])
+def get_employee_data(id):
     # Koneksi ke database
     connection = pymysql.connect(host='localhost',
                                  user='root',
@@ -282,12 +285,12 @@ def get_employee_data(nik):
     try:
         with connection.cursor() as cursor:
             # Query untuk mengambil data pegawai berdasarkan NIK
-            sql = "SELECT * FROM pegawai WHERE nik = %s"
-            cursor.execute(sql, (nik,))
+            sql = "SELECT * FROM anggota WHERE id = %s"
+            cursor.execute(sql, (id,))
             employee_data = cursor.fetchone()  # Mengambil satu baris data pegawai
 
             # Log untuk melihat apakah permintaan diterima dengan benar
-            print("Menerima permintaan untuk NIK:", nik)
+            print("Menerima permintaan untuk NIK:", id)
 
             # Log untuk melihat data yang dikirim ke klien
             print("Data yang dikirim:", employee_data)
