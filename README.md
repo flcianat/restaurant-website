@@ -1,5 +1,5 @@
 
-# Library Website
+# Restaurant Website
 
 ## Getting Started
 ```
@@ -11,7 +11,7 @@ py -m pip install PyMySql
 
 ```
 
-Import [] to database
+Import db_restoran to database
 
 ```
 py -m flask run --debug
