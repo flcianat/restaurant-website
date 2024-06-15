@@ -2,9 +2,6 @@ from flask import Flask, render_template, request, redirect, session, url_for
 import pymysql.cursors, os
 import datetime
 from flask import jsonify
-import uuid
-import secrets
-import string
 from datetime import datetime
 
 
@@ -24,17 +21,7 @@ def closeDb():
     cursor.close()
     conn.close()
 
-# books = [
-#     {"id": 1, "title": "Harry Potter", "author": "J.K. Rowling", "year": 1997, "stock":2},
-#     {"id": 2, "title": "Lord of the Rings", "author": "J.R.R. Tolkien", "year": 1954,"stock":2},
-#     {"id": 3, "title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960,"stock":2}
-# ]
-
-def generate_random_id(length):
-    characters = string.ascii_letters + string.digits
-    random_id = ''.join(random.choice(characters) for _ in range(length))
-    return random_id
-
+# BUAT LOGIN 
 @application.route('/login', methods=['GET','POST'])
 def login():
     if request.method == "POST":
@@ -59,27 +46,17 @@ def login():
             closeDb() 
             return render_template("index.html", message="Invalid username or password.")
     return render_template("index.html")
+##
 
-@application.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == "POST":
-        fullname = request.form["fullname"]
-        password = request.form["password"]
-        email = request.form["email"]
-        born = request.form["born"]
-        phonenumber = request.form["phonenumber"]
-        status = "Active"
+# LOGOUT
+@application.route("/logout")
+def logout():
+    session.pop("logged_in", None)
+    session.pop("username", None)
+    return redirect(url_for("login"))
+##
 
-        openDb()
-        id = generate_id(cursor)
-        sql = "INSERT INTO anggota (fullname, password, email, born, phonenumber, status, id) VALUES (%s, %s,%s, %s, %s, %s,%s)"
-        val = (fullname, password, email, born, phonenumber, status, id)
-        cursor.execute(sql, val)
-        conn.commit()
-        closeDb()
-        return redirect(url_for('user'))
-    return render_template("register.html")
-
+# GET DATA
 def fetch_anggota():
     openDb()
     container = []
@@ -112,7 +89,9 @@ def fetch_transaksi():
         all_transaksi.append(data)
     closeDb()
     return all_transaksi
+##
 
+# TAMPILIN HALAMAN ADMIN & USER
 @application.route("/admin")
 def admin():
     current_date = datetime.now().strftime('%Y-%m-%d')
@@ -130,11 +109,19 @@ def user():
         return render_template("user.html", email=session["email"], books=books)
     else:
         return redirect(url_for("login"))
+##
 
+# HALAMAN LAIN-LAIN
 @application.route("/denda")
 def denda():
     return render_template("data_denda.html")
+##
 
+
+
+
+
+# ADD
 @application.route('/tambah_buku', methods=['GET', 'POST'])
 def tambah_buku():
     if request.method == 'POST':
@@ -155,44 +142,9 @@ def tambah_buku():
         return redirect(url_for('admin'))
     return render_template('tambah_buku.html')
 
-@application.route("/logout")
-def logout():
-    session.pop("logged_in", None)
-    session.pop("username", None)
-    return redirect(url_for("login"))
+##
 
-#fungsi membuat NIK otomatis
-def generate_nik():
-    # mendefinisikan fungsi openDb(), cursor, dan closeDb() 
-    openDb()
-
-    current_year = datetime.datetime.now().year
-    current_month = datetime.datetime.now().month
-    
-    year_str = str(current_year).zfill(2)
-    
-    current_month_str = str(current_month).zfill(2)
-
-    base_nik_without_number = f"P-{year_str}{current_month_str}"
-
-    cursor.execute("SELECT nik FROM pegawai WHERE nik LIKE %s ORDER BY nik DESC LIMIT 1", (f"{base_nik_without_number}%",))
-    last_nik = cursor.fetchone()
-
-    if last_nik:
-        last_number = int(last_nik[0].split("-")[-1])  # Mengambil nomor urut terakhir
-        next_number = last_number + 1
-        # Membuat NIK lengkap dengan nomor urut
-        next_nik = f"P-{str(next_number).zfill(3)}"
-    else:
-        next_number = 1  # Jika belum ada data, mulai dari 1
-        # Membuat NIK lengkap dengan nomor urut
-        next_nik = f"{base_nik_without_number}{str(next_number).zfill(3)}"
-    
-    closeDb()  # untuk menutup koneksi database 
-    
-    return next_nik
-
-
+# EDIT 
 @application.route('/edit_buku/<int:id>', methods=['GET', 'POST'])
 def edit_buku(id):
     if request.method == 'POST':
@@ -251,8 +203,9 @@ def edit_user(id):
     
     # Render the edit user form with the user details
     return render_template('edit.html', user=user)
+##
 
-
+# DELETE
 @application.route('/delete_buku/<int:id>', methods=['GET','POST'])
 def delete_buku(id):
     openDb()
@@ -271,7 +224,9 @@ def hapus(id):
     closeDb()
     return redirect(url_for('admin'))
 
-#fungsi cetak ke PDF
+##
+
+# PRINT 
 @application.route('/get_employee_data/<int:id>', methods=['GET'])
 def get_employee_data(id):
     # Koneksi ke database
@@ -303,7 +258,8 @@ def get_employee_data(id):
 
     finally:
         connection.close()  # Menutup koneksi database setelah selesai
+##
 
-#Program utama      
+# MAIN PROGRAM      
 if __name__ == '__main__':
     application.run(debug=True)
