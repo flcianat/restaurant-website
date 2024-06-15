@@ -13,7 +13,7 @@ application.secret_key = "your_secret_key_here"
 
 def openDb():
     global conn, cursor
-    conn = pymysql.connect(db="db_perpus", user="root", passwd="",host="localhost",port=3306,autocommit=True)
+    conn = pymysql.connect(db="db_restoran", user="root", passwd="",host="localhost",port=3306,autocommit=True)
     cursor = conn.cursor()	
 
 def closeDb():
@@ -101,7 +101,7 @@ def admin():
     if "logged_in" in session and session["logged_in"]:
         return render_template("admin.html", email=session["email"], container=container, books=books, transaksi=transaksi, current_date=current_date)
     else:
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
     
 @application.route("/user")
 def user():
@@ -112,9 +112,9 @@ def user():
 ##
 
 # HALAMAN LAIN-LAIN
-@application.route("/denda")
-def denda():
-    return render_template("data_denda.html")
+@application.route("/admin-new")
+def admin_new():
+    return render_template("admin-new.html")
 ##
 
 
@@ -233,7 +233,7 @@ def get_employee_data(id):
     connection = pymysql.connect(host='localhost',
                                  user='root',
                                  password='',  # Password Anda (jika ada)
-                                 db='db_perpus',
+                                 db='db_restoran',
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
 
