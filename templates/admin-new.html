@@ -127,6 +127,13 @@
         display: inline-block;
         color: black; /* Changed blue to black */
       }
+
+      .rounded-icon {
+        background-color: #007bff;
+        padding: 10px;
+        border-radius: 50%;
+        color: white; /* Ensure the icon color contrasts with the blue background */
+      }
     </style>
   </head>
   <body class="poppins-regular">
@@ -154,7 +161,7 @@
         <hr />
         <a href="#home" class="nav-link active" data-target="home">
           <i class="bi bi-house-door-fill"></i>
-          Home
+          Dashboard
         </a>
 
         <a href="#menu" class="nav-link" data-target="menu">
@@ -163,7 +170,7 @@
         </a>
 
         <a href="#orders" class="nav-link" data-target="orders">
-          <i class="bi bi-basket2-fill"></i>
+          <i class="bi bi-receipt-cutoff"></i>
           Orders
         </a>
 
@@ -184,24 +191,131 @@
             <strong class="text-black">Admin</strong>
           </a>
           <ul class="dropdown-menu text-small shadow">
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
+            <li class="">
+              <a class="dropdown-item" href="#">
+                <i class="bi bi-box-arrow-in-left"></i>
+                Sign out</a
+              >
+            </li>
           </ul>
         </div>
       </div>
 
       <div class="container-fluid" id="content">
         <div id="home" class="content-section active-section">
-          <h2>Home</h2>
-          <p>Welcome to the home section.</p>
+          <h3>Dashboard</h3>
+          <p>Welcome to restaurant admin!</p>
+
+          <div class="row">
+            <div class="col">
+              <div
+                class="p-3 px-4 shadow-sm border-black d-flex align-items-center gap-2"
+              >
+                <i
+                  class="bi bi-clock-history fs-3"
+                  style="
+                    background-color: rgba(0, 123, 255, 10%);
+                    border-radius: 50%;
+                    padding: 10px;
+                    height: 50px;
+                    width: 50px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: #007bff;
+                  "
+                ></i>
+                <div>
+                  <h1 class="fw-semibold">5</h1>
+                  <p class="">Active Orders</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div
+                class="p-3 px-4 shadow-sm border-black d-flex align-items-center gap-2"
+              >
+                <i
+                  class="bi bi-journals fs-3"
+                  style="
+                    background-color: rgba(0, 123, 255, 10%);
+                    border-radius: 50%;
+                    padding: 10px;
+                    height: 50px;
+                    width: 50px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: #007bff;
+                  "
+                ></i>
+                <div>
+                  <h1 class="fw-semibold">15</h1>
+                  <p class="">Total Menu</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col"> 
+              <div class="p-3 px-4 shadow-sm border border-black d-flex align-items-center gap-2"
+            >
+              <i
+                class="bi bi-receipt-cutoff fs-3"
+                style="
+                  background-color: rgba(0, 123, 255, 10%);
+                  border-radius: 50%;
+                  padding: 10px;
+                  height: 50px;
+                  width: 50px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  color: #007bff;
+                "
+              ></i>
+              <div class="lh-sm">
+                <h1 class="fw-semibold">15</h1>
+                <p class="">Total Orders</p>
+              </div>
+            </div>
+          </div>
+
+            <div class="col">
+            <div
+            class="p-3 px-4 shadow-sm border border-black d-flex align-items-center gap-2"
+            >
+            <i
+              class="bi bi-wallet2 fs-3"
+              style="
+                background-color: rgba(0, 123, 255, 10%);
+                border-radius: 50%;
+                padding: 10px;
+                height: 50px;
+                width: 50px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: #007bff;
+              "
+            ></i>
+            <div class="lh-sm">
+              <h1 class="fw-semibold">1,5K</h1>
+              <p class="">Total Income</p>
+            </div>
+            </div>
+            </div>
+        
         </div>
-        <div id="menu" class="content-section">
-          <h2>Menu</h2>
-          <p>Here is the menu content.</p>
-        </div>
-        <div id="orders" class="content-section">
-          <h2>Orders</h2>
-          <p>Here is the orders content.</p>
-        </div>
+       
+      </div>
+      <div id="menu" class="content-section">
+        <h2>Menu</h2>
+        <p>Here is the menu content.</p>
+        test
+      </div>
+      <div id="orders" class="content-section">
+        <h2>Orders</h2>
+        <p>Here is the orders content.</p>
       </div>
     </main>
 
