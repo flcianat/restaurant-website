@@ -68,6 +68,17 @@ def fetch_anggota():
     closeDb()
     return container
 
+def fetch_orders():
+    openDb()
+    arr_orders = []
+    sql = "SELECT * FROM orders;"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    for data in results:
+        arr_orders.append(data)
+    closeDb()
+    return arr_orders
+
 def fetch_buku():
     openDb()
     books = []
@@ -114,7 +125,16 @@ def user():
 # HALAMAN LAIN-LAIN
 @application.route("/admin-new")
 def admin_new():
-    return render_template("admin-new.html")
+    data_orders = fetch_orders()
+    return render_template("admin-new.html", data_orders=data_orders)
+
+@application.route("/menulist")
+def menulist():
+    return render_template("menulist.html")
+
+@application.route("/orderlist")
+def orderlist():
+    return render_template("orderlist.html")
 ##
 
 
