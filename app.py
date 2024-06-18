@@ -179,7 +179,26 @@ def tambah_buku():
         return redirect(url_for('admin'))
     return render_template('tambah_buku.html')
 
+@application.route('/add_menu', methods=['GET', 'POST'])
+def add_menu():
+   if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        price = request.form['price']
+        category = request.form['category']
+
+        openDb()
+        sql = "INSERT INTO menuitems (name, description, price, category) VALUES (%s,%s, %s, %s)"
+        val = (name,description,price,category)
+        cursor.execute(sql, val)
+        conn.commit()
+        closeDb()
+        return redirect(url_for('admin_new'))
+   return render_template('add_menu.html')
+
 ##
+##
+
 
 # EDIT 
 @application.route('/edit_menu/<int:id>', methods=['GET', 'POST'])
@@ -204,31 +223,6 @@ def edit_menu(id):
     menu = cursor.fetchone()
     closeDb()
     return render_template('edit_menu.html', menu=menu)
-
-@application.route('/edit_buku/<int:id>', methods=['GET', 'POST'])
-def edit_buku(id):
-    if request.method == 'POST':
-        # Retrieve form data
-        judul = request.form['judul']
-        penulis = request.form['penulis']
-        tahun = request.form['tahun']
-        status = request.form['status']
-        stok = request.form['stok']
-        
-        openDb()
-    
-        sql = "UPDATE buku SET judul = %s, penulis = %s, tahun = %s, status = %s, stok = %s WHERE id = %s"
-        val = (judul, penulis, tahun, status, stok, id)
-        cursor.execute(sql, val)
-        conn.commit()
-        closeDb()
-        return redirect(url_for('admin'))
-    openDb()
-    sql = "SELECT * FROM buku WHERE id = %s"
-    cursor.execute(sql, (id,))
-    book = cursor.fetchone()
-    closeDb()
-    return render_template('edit_buku.html', book=book)
 
 @application.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_user(id):
@@ -266,14 +260,15 @@ def edit_user(id):
 ##
 
 # DELETE
-@application.route('/delete_buku/<int:id>', methods=['GET','POST'])
-def delete_buku(id):
+@application.route('/delete_menu/<int:id>', methods=['GET','POST'])
+def delete_menu(id):
     openDb()
-    sql = "DELETE FROM buku WHERE id = %s"
+    sql = "DELETE FROM menuitems WHERE MenuItemID = %s"
     cursor.execute(sql, (id,))
     conn.commit()
     closeDb()
-    return redirect(url_for('admin'))
+    return redirect(url_for('admin_new'))
+
 
 @application.route('/hapus/<int:id>', methods=['GET','POST'])
 def hapus(id):

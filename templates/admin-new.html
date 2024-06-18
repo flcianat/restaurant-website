@@ -419,7 +419,10 @@
       <!-- MENU SECTION -->
 
       <div id="menu" class="content-section">
+        <div class="d-flex justify-content-between align-items-center">
         <h3>Menu</h3>
+        <a href="/add_menu" class="btn btn-primary">+ Add Menu</a>
+      </div>
         <p>Showing 1 to 4 of (?) entries</p>
        
         <div class="album-grid">
@@ -432,9 +435,9 @@
                     <div class="d-flex align-items-center justify-content-between">
                     <h5>${{ menu[3]}}</h5>
                     <div class="d-flex gap-2">
-                      <button type="button" class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
-                      <button type="button" class="btn btn-primary"> <i class="bi bi-printer-fill"></i></button>
-                      <button type="button" class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button>
+                      <a href="/edit_menu/{{menu[0]}}" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
+                      <a type="button" class="btn btn-primary"> <i class="bi bi-printer-fill"></i></a>
+                      <a href="/delete_menu/{{menu[0]}}" class="btn btn-danger"><i class="bi bi-trash3-fill"></i></a>
                     </div>
                   </div>
                 </div>
@@ -490,6 +493,53 @@
       function updateStatus(newStatus) {
     document.getElementById('statusButton').innerText = newStatus;
   }
+    </script>
+    <script>
+      function printToPDF(id) {
+        fetch(`/get_employee_data/${id}`)
+          .then((response) => response.json())
+          .then((data) => {
+            var doc = new jsPDF();
+            doc.text(20, 20, "");
+
+            doc.text(20, 40, `NIK: ${data.nik}`);
+            doc.text(20, 50, `Nama: ${data.nama}`);
+            doc.text(20, 60, `Alamat: ${data.alamat}`);
+            doc.text(20, 70, `Tgl.Lahir: ${data.tgllahir}`);
+            doc.text(20, 80, `Jenis Kelamin: ${data.jeniskelamin}`);
+            doc.text(20, 90, `Status: ${data.status}`);
+            doc.text(20, 100, `Gaji: ${data.gaji}`);
+
+            // Generate pratinjau PDF sebelum menyimpan
+            var pdfOutput = doc.output("datauristring");
+
+            // Tampilkan pratinjau PDF dalam jendela baru
+            var iframe =
+              "<iframe width='100%' height='100%' src='" +
+              pdfOutput +
+              "'></iframe>";
+            var x = window.open();
+            x.document.open();
+            x.document.write(iframe);
+            x.document.close();
+
+            // Simpan PDF
+            doc.save("DetailKepegawaian.pdf");
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+
+      // Event Listener untuk tombol Print
+      var printButtons = document.querySelectorAll(".print-btn");
+      printButtons.forEach(function (button) {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          var nik = this.getAttribute("data-nik"); // Ambil NIK dari atribut data-nik tombol
+          printToPDF(nik);
+        });
+      });
     </script>
   </body>
 </html>
