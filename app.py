@@ -57,17 +57,6 @@ def logout():
 ##
 
 # GET DATA
-def fetch_anggota():
-    openDb()
-    container = []
-    sql = "SELECT * FROM anggota;"
-    cursor.execute(sql)
-    results = cursor.fetchall()
-    for data in results:
-        container.append(data)
-    closeDb()
-    return container
-
 def fetch_orders():
     openDb()
     arr_orders = []
@@ -78,6 +67,31 @@ def fetch_orders():
         arr_orders.append(data)
     closeDb()
     return arr_orders
+
+
+def fetch_orders_detail(orderid):
+    openDb()
+    detail=[]
+    sql = "SELECT orderitems.ItemName, orderitems.Quantity, orderitems.Price, (orderitems.Quantity * orderitems.Price) AS total_item FROM orderitems JOIN orders ON orderitems.OrderID = orders.OrderID WHERE orderitems.OrderID = %s"
+    cursor.execute(sql,(orderid,))
+    results = cursor.fetchall()
+    for data in results:
+        detail.append(data)
+    closeDb()
+    return detail
+
+def fetch_menu():
+    openDb()
+    arr_menu = []
+    sql = "SELECT * FROM menuitems;"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    for data in results:
+        arr_menu.append(data)
+    closeDb()
+    return arr_menu
+
+
 
 def fetch_buku():
     openDb()
@@ -106,7 +120,7 @@ def fetch_transaksi():
 @application.route("/admin")
 def admin():
     current_date = datetime.now().strftime('%Y-%m-%d')
-    container = fetch_anggota()
+    # container = fetch_anggota()
     books = fetch_buku()
     transaksi =fetch_transaksi()
     if "logged_in" in session and session["logged_in"]:
@@ -125,8 +139,15 @@ def user():
 # HALAMAN LAIN-LAIN
 @application.route("/admin-new")
 def admin_new():
-    data_orders = fetch_orders()
-    return render_template("admin-new.html", data_orders=data_orders)
+    orders = fetch_orders()
+    menu = fetch_menu()
+    return render_template("admin-new.html", data_orders=orders, data_menu=menu)
+
+@application.route("/detail_order/<int:id>")
+def detail_order(id):
+    detail = fetch_orders_detail(id)  
+    return render_template("detail_order.html", data_detail=detail, id=id)
+
 
 @application.route("/menulist")
 def menulist():
@@ -136,10 +157,6 @@ def menulist():
 def orderlist():
     return render_template("orderlist.html")
 ##
-
-
-
-
 
 # ADD
 @application.route('/tambah_buku', methods=['GET', 'POST'])

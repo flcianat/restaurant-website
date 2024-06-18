@@ -75,23 +75,23 @@
         padding: 10px;
         border-radius: 0.375rem;
         margin: 5px 0;
-        color: black; /* Changed blue to black */
+        color: black; 
         font-weight: 500;
       }
 
       .nav-link i {
         margin-right: 15px;
-        color: black; /* Changed blue to black */
+        color: black; 
       }
 
       .nav-link.active {
         font-weight: bold;
-        background-color: #e0e0e0; /* Changed light blue to gray */
-        color: black; /* Changed blue to black */
+        background-color: #e0e0e0;
+        color: black; 
       }
 
       .nav-link:hover {
-        color: black; /* Changed blue to black */
+        color: black; 
       }
 
       .nav-item {
@@ -114,25 +114,25 @@
       .sidebar-header {
         display: flex;
         align-items: center;
-        justify-content: center; /* Center horizontally */
+        justify-content: center; 
         text-align: center;
       }
 
       .sidebar-header i {
         margin-right: 10px;
-        color: black; /* Changed blue to black */
+        color: black; 
       }
 
       .sidebar-header span {
         display: inline-block;
-        color: black; /* Changed blue to black */
+        color: black;
       }
 
       .rounded-icon {
         background-color: #007bff;
         padding: 10px;
         border-radius: 50%;
-        color: white; /* Ensure the icon color contrasts with the blue background */
+        color: white; 
       }
 
       .album-grid {
@@ -194,13 +194,14 @@
         font-weight: bolder;
         align-items: center;
       }
+      
     </style>
   </head>
   <body class="poppins-regular">
     <main class="d-flex flex-nowrap">
       <div
         class="d-flex flex-column flex-shrink-0 p-3 bg-light shadow"
-        style="width: 280px; height: 100vh"
+        style="width: 280px; height: 100vh;position: fixed; top: 0; left: 0;"
       >
         <a
           href="#"
@@ -261,7 +262,7 @@
         </div>
       </div>
 
-      <div class="container-fluid m-2" id="content">
+      <div class="container-fluid my-2" id="content" style="margin-left: 280px;">
         <div id="home" class="content-section active-section">
           <h3>Dashboard</h3>
           
@@ -383,7 +384,12 @@
           </thead>
           <tbody class="text-center">
             {% for order in data_orders %}
-            <tr>
+            <tr class="accordion-toggle collapsed"
+            id="accordion1"
+            data-mdb-collapse-init
+            data-mdb-parent="#accordion1"
+            href="#collapseOne"
+            aria-controls="collapseOne">
               <td>{{ order[0] }}</td>
               <td>{{ order[1] }}</td>
               <td>{{ order[2] }}</td>
@@ -397,69 +403,9 @@
               </td>
               <td>{{ order[5] }}</td>
               <td>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                <a href="/detail_order/{{ order[0] }}" class="btn btn-primary">
                   Detail Order
-                </button>
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Order #{{ order[0] }}</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body d-flex justify-content-left flex-column">
-                        <p class="">Date : June 17, 2024</p>
-                        <table class="table table-bordered">
-                          <thead>
-                              <tr>
-                                  <th>Item</th>
-                                  <th>Qty</th>
-                                  <th>Price</th>
-                                  <th>Total</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <tr>
-                                  <td>Caesar Salad</td>
-                                  <td>2</td>
-                                  <td>$8.99</td>
-                                  <td>$17.98</td>
-                              </tr>
-                              <tr>
-                                  <td>Grilled Salmon</td>
-                                  <td>1</td>
-                                  <td>$18.99</td>
-                                  <td>$18.99</td>
-                              </tr>
-                              <tr>
-                                  <td>Chocolate Lava Cake</td>
-                                  <td>1</td>
-                                  <td>$6.99</td>
-                                  <td>$6.99</td>
-                              </tr>
-                              <tr>
-                                <td colspan="3">Total</td>
-                                <td>$98.77</td>
-                            </tr>
-                          </tbody>
-                      </table>
-
-                      </div>
-                      <div class="modal-footer">
-                        <div class="dropdown">
-                          <button id="statusButton" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ order[4] }}
-                          </button>
-                          <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" onclick="updateStatus('Accept')">Accept</a></li>
-                            <li><a class="dropdown-item" href="#" onclick="updateStatus('Reject')">Reject</a></li>
-                          </ul>
-                        </div>
-                        <button type="button" class="btn btn-primary"><i class="bi bi-printer-fill"></i></button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              </a>
             </td>
             </tr>
             {% endfor %}
@@ -470,51 +416,32 @@
 
       </div>
 
+      <!-- MENU SECTION -->
+
       <div id="menu" class="content-section">
         <h2>Menu</h2>
         <p>Showing 1 to 4 of (?) entries</p>
+       
         <div class="album-grid">
+          {% for menu in data_menu %}
             <div class="album-card">
                 <img src="https://via.placeholder.com/250x150" alt="Album Image">
                 <div class="album-card-body">
-                    <h5 class="album-card-title">Menu Name</h5>
-                    <p class="album-card-text">Description of the menu item.</p>
-                    <p class="album-card-text">$ Price</p>
-                    <div class="action-buttons">
-                        <button class="edit-button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                        <button class="delete-button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                        <button class="print-button"><i class="fa fa-print" aria-hidden="true"></i></button>
+                    <h5 class="album-card-title">{{ menu[1]}}</h5>
+                    <p class="album-card-text">{{ menu[2]}}</p>
+                    <div class="d-flex align-items-center justify-content-between">
+                    <h5>${{ menu[3]}}</h5>
+                    <div class="d-flex gap-2">
+                      <button type="button" class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
+                      <button type="button" class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button>
+                      <button type="button" class="btn btn-primary"> <i class="bi bi-printer-fill"></i></button>
                     </div>
+                  </div>
                 </div>
             </div>
-            <div class="album-card">
-                <img src="https://via.placeholder.com/250x150" alt="Album Image">
-                <div class="album-card-body">
-                    <h5 class="album-card-title">Menu Name</h5>
-                    <p class="album-card-text">Description of the menu item.</p>
-                    <p class="album-card-text">$ Price</p>
-                    <div class="action-buttons">
-                        <button class="edit-button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                        <button class="delete-button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                        <button class="print-button"><i class="fa fa-print" aria-hidden="true"></i></button>
-                    </div>
-                </div>
-            </div>
-            <div class="album-card">
-                <img src="https://via.placeholder.com/250x150" alt="Album Image">
-                <div class="album-card-body">
-                    <h5 class="album-card-title">Menu Name</h5>
-                    <p class="album-card-text">Description of the menu item.</p>
-                    <p class="album-card-text">$ Price</p>
-                    <div class="action-buttons">
-                        <button class="edit-button"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
-                        <button class="delete-button"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-                        <button class="print-button"><i class="fa fa-print" aria-hidden="true"></i></button>
-                    </div>
-                </div>
-            </div>
+              {% endfor %}
+         
         </div>
-               <!-- Pagination -->
                <nav class="mt-3 mb-3 d-flex justify-content-center" aria-label="...">
                 <ul class="pagination">
                     <li class="page-item disabled">
