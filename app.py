@@ -182,6 +182,29 @@ def tambah_buku():
 ##
 
 # EDIT 
+@application.route('/edit_menu/<int:id>', methods=['GET', 'POST'])
+def edit_menu(id):
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        price = request.form['price']
+        category = request.form['category']
+        
+        openDb()
+    
+        sql = "UPDATE menuitems SET name = %s, description = %s, price = %s, category = %s WHERE MenuItemID = %s"
+        val = (name, description, price, category, id)
+        cursor.execute(sql, val)
+        conn.commit()
+        closeDb()
+        return redirect(url_for('admin_new'))
+    openDb()
+    sql = "SELECT * FROM menuitems WHERE MenuItemID = %s"
+    cursor.execute(sql, (id,))
+    menu = cursor.fetchone()
+    closeDb()
+    return render_template('edit_menu.html', menu=menu)
+
 @application.route('/edit_buku/<int:id>', methods=['GET', 'POST'])
 def edit_buku(id):
     if request.method == 'POST':
