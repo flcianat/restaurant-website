@@ -68,6 +68,16 @@ def fetch_orders():
     closeDb()
     return arr_orders
 
+def fetch_orders_recent():
+    openDb()
+    arr_orders = []
+    sql = "SELECT * FROM orders ORDER BY OrderDate DESC LIMIT 5;"
+    cursor.execute(sql)
+    results = cursor.fetchall()
+    for data in results:
+        arr_orders.append(data)
+    closeDb()
+    return arr_orders
 
 def fetch_orders_detail(orderid):
     openDb()
@@ -141,13 +151,13 @@ def user():
 def admin_new():
     orders = fetch_orders()
     menu = fetch_menu()
+    recent = fetch_orders_recent()
     return render_template("admin-new.html", data_orders=orders, data_menu=menu)
 
 @application.route("/detail_order/<int:id>")
 def detail_order(id):
     detail = fetch_orders_detail(id)  
     return render_template("detail_order.html", data_detail=detail, id=id)
-
 
 @application.route("/menulist")
 def menulist():
@@ -159,26 +169,6 @@ def orderlist():
 ##
 
 # ADD
-@application.route('/tambah_buku', methods=['GET', 'POST'])
-def tambah_buku():
-    if request.method == 'POST':
-        title = request.form['title']
-        author = request.form['author']
-        year = request.form['year']
-        stok = request.form['stok']
-
-        status = "Tersedia"  
-        new_id = generate_random_id
-
-        openDb()
-        sql = "INSERT INTO buku (id, judul, penulis, tahun, status, stok) VALUES (%s,%s, %s, %s, %s, %s)"
-        val = (new_id,title, author, year, status, stok)
-        cursor.execute(sql, val)
-        conn.commit()
-        closeDb()
-        return redirect(url_for('admin'))
-    return render_template('tambah_buku.html')
-
 @application.route('/add_menu', methods=['GET', 'POST'])
 def add_menu():
    if request.method == 'POST':
@@ -197,10 +187,7 @@ def add_menu():
         closeDb()
         return redirect(url_for('admin_new')+ '#menu')
    return render_template('add_menu.html')
-
 ##
-##
-
 
 # EDIT 
 @application.route('/edit_menu/<int:id>', methods=['GET', 'POST'])
@@ -252,41 +239,7 @@ def reject(id):
         conn.commit()
         closeDb()
     return redirect(url_for('admin_new') + "#orders")
-  
 
-@application.route('/edit/<int:id>', methods=['GET', 'POST'])
-def edit_user(id):
-    if request.method == 'POST':
-        # Retrieve form data
-        fullname = request.form['fullname']
-        email = request.form['email']
-        password = request.form['password']
-        born = request.form['born']
-        phonenumber = request.form['phonenumber']
-        status = request.form['status']
-        
-        openDb()
-        
-        # Update the user record in the database
-        sql = "UPDATE anggota SET fullname = %s, email = %s, password = %s, born = %s, phonenumber = %s, status = %s WHERE id = %s"
-        val = (fullname, email, password, born, phonenumber, status, id)
-        cursor.execute(sql, val)
-        conn.commit()
-        
-        closeDb()
-        
-        # Redirect to the admin page after updating
-        return redirect(url_for('admin'))
-    
-    # If it's a GET request, retrieve the user details based on the provided ID
-    openDb()
-    sql = "SELECT * FROM anggota WHERE id = %s"
-    cursor.execute(sql, (id,))
-    user = cursor.fetchone()
-    closeDb()
-    
-    # Render the edit user form with the user details
-    return render_template('edit.html', user=user)
 ##
 
 # DELETE
