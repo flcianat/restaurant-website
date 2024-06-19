@@ -182,14 +182,15 @@ def tambah_buku():
 @application.route('/add_menu', methods=['GET', 'POST'])
 def add_menu():
    if request.method == 'POST':
+        img_url = request.form['img_url']
         name = request.form['name']
         description = request.form['description']
         price = request.form['price']
         category = request.form['category']
 
         openDb()
-        sql = "INSERT INTO menuitems (name, description, price, category) VALUES (%s,%s, %s, %s)"
-        val = (name,description,price,category)
+        sql = "INSERT INTO menuitems (img_url, name, description, price, category) VALUES (%s,%s,%s, %s, %s)"
+        val = (img_url, name,description,price,category)
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
