@@ -225,6 +225,21 @@ def edit_menu(id):
     closeDb()
     return render_template('edit_menu.html', menu=menu)
 
+@application.route('/update_status/<int:id>', methods=['GET', 'POST'])
+def update_status(id):
+    if request.method == 'POST':
+        status = request.form['status']
+        
+        openDb()
+    
+        sql = "UPDATE orders SET status = %s WHERE MenuItemID = %s"
+        val = (status, id)
+        cursor.execute(sql, val)
+        conn.commit()
+        closeDb()
+    return redirect(url_for('admin_new#home'))
+  
+
 @application.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit_user(id):
     if request.method == 'POST':

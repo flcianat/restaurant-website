@@ -36,12 +36,14 @@
     />
 
     <style>
+      
       .poppins-regular {
         font-family: "Poppins", sans-serif;
         font-weight: 400;
         font-style: normal;
       }
 
+      
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -143,23 +145,34 @@
       }
 
       .album-card {
-        background-color: white;
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-      }
+    background-color: white;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
 
-      .album-card img {
-        width: 100%;
-        height: auto;
+.album-card img {
+    width: 100%;
+    height: 100%; 
+    object-fit: cover; 
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
       }
 
       .album-card-body {
-        padding: 15px;
+    padding: 15px;
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
       }
+
+      .album-card-body .d-flex {
+    margin-top: auto; 
+}
 
       .album-card-title {
         font-size: 1.25rem;
@@ -178,23 +191,77 @@
         text-align: center;
         width: 100px;
       }
-
       .action-buttons {
-        display: flex;
-        gap: 10px;
-        margin-top: auto;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px; 
+    overflow: hidden; 
       }
 
       .action-buttons button {
-        padding: 10px;
-        border: none;
-        background: none;
-        cursor: pointer;
-        color: inherit;
-        font-weight: bolder;
-        align-items: center;
-      }
-      
+  padding: 8px 16px;
+  color: #ffffff; 
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 10px; 
+}
+
+.action-buttons button:nth-child(1) {
+  background-color: #007bff;
+}
+
+.action-buttons button:nth-child(2) {
+  background-color: #28a745; 
+}
+
+.action-buttons button:nth-child(3) {
+  background-color: #dc3545; 
+}
+
+.action-buttons button:hover {
+  opacity: 0.8;
+}
+
+.action-buttons button:focus {
+  outline: none;
+}
+
+.box123 {
+    box-shadow: 5px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+td {
+    border: none; 
+    text-align: center;
+    padding: 10px; 
+}
+
+tr {
+    transition: background-color 0.3s;
+}
+
+tr:hover {
+    background-color: #f0f0f0; 
+}
+
+th {
+    background-color: #f2f2f2;
+    border: none; 
+    text-align: center;
+    padding: 15px; 
+}
     </style>
   </head>
   <body class="poppins-regular">
@@ -394,18 +461,29 @@
               <td>{{ order[1] }}</td>
               <td>{{ order[2] }}</td>
               <td>{{ order[3] }}</td>
-              <td class="mx-auto"><p class="btn btn-secondary">
+              <td class="mx-auto">
                 {% if order[4] == 'Accept'%}
+                <h5 class="btn btn-primary">
                 Accepted
+              </h5>
                 {% elif order[4] == 'Reject' %}
+                <h5 class="btn btn-secondary">
                 Rejected
+              </h5>
                 {% endif %}
               </td>
               <td>{{ order[5] }}</td>
               <td>
                 <a href="/detail_order/{{ order[0] }}" class="btn btn-primary">
-                  Detail Order
+                  Detail 
               </a>
+              <a href="/update_status/{{order[0]}}" class="btn btn-success">
+                <i class="bi bi-check-lg"></i>
+              </a>
+              <a href="" class="btn btn-danger">
+                <i class="bi bi-x-lg"></i>
+              </a>
+             
             </td>
             </tr>
             {% endfor %}
@@ -467,10 +545,60 @@
             </nav>
         </div>
 
-      <div id="orders" class="content-section">
-        <h2>Orders</h2>
-        <p>Here is the orders content.</p>
-      </div>
+        <!-- ORDERS SECTION -->
+        <div id="orders" class="content-section">
+          <h2>Orders</h2>
+          <p>Here is the order list</p>
+          <table>
+            <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Customer Name</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>#5552397</td>
+                <td>26 March 2020, 12:42 AM</td>
+                <td>Veronica</td>
+                <td>21 King Street<br>London</td>
+                <td class="status" id="status-1001">Pending</td>
+                <td>$74.92</td>
+                <td>
+                  <div class="action-buttons">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      Detail Order
+                    </button>
+                    <button onclick="updateOrderStatus(this, 'Accepted')">
+                      Accept
+                  </button>
+                  <button onclick="updateOrderStatus(this, 'Rejected')">
+                      Reject
+                  </button>
+                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Order #5552397</h1>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body d-flex justify-content-left flex-column">
+                          <p class="">Date : June 17, 2024</p>
+                          <table class="table table-bordered">
+                            <tr><th>Item</th><th>Quantity</th><th>Price</th></tr>
+                            <tr><td>Item 1</td><td>2</td><td>$24.92</td></tr>
+                            <tr><td>Item 2</td><td>1</td><td>$50.00</td></tr>
+                          </table>
+                          <p>Total: $74.92</p>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
