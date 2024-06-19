@@ -506,7 +506,6 @@ th {
         <div class="album-grid">
           {% for menu in data_menu %}
             <div class="album-card">
-                <!-- <img src="https://via.placeholder.com/250x150" alt="Album Image"> -->
                  <div style="width: 150;">
                 <img src="{{menu[0]}}" alt="{{menu[1]}}">
               </div>
@@ -514,12 +513,19 @@ th {
                 <div class="album-card-body">
                     <h5 class="album-card-title">{{ menu[2]}}</h5>
                     <p class="album-card-text">{{ menu[3]}}</p>
+                    <div class="d-flex gap-2">
+                      {% if menu[6] == "Unavailable"%}
+                      <p class="album-card-text badge text-bg-secondary">{{ menu[6]}}</p>
+                      {% else %}
+                      <p class="album-card-text badge text-bg-success">{{ menu[6]}}</p>
+                      {% endif %}
+                
                     <p class="album-card-text badge text-bg-primary">{{ menu[5]}}</p>
+                  </div>
                     <div class="d-flex align-items-center justify-content-between">
                     <h5>${{ menu[4]}}</h5>
                     <div class="d-flex gap-2">
                       <a href="/edit_menu/{{menu[1]}}" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
-                      <a type="button" class="btn btn-primary"> <i class="bi bi-printer-fill"></i></a>
                       <a href="/delete_menu/{{menu[1]}}" class="btn btn-danger"><i class="bi bi-trash3-fill"></i></a>
                     </div>
                   </div>

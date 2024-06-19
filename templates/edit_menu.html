@@ -41,9 +41,35 @@
     </style>
   </head>
   <body class="poppins-regular">
-    <a type="button" class="btn btn-primary mb-2" href="/admin-new#menu">Back</a>
-   
+    <a type="button" class="btn btn-primary mb-2" href="/admin-new#menu"
+      >Back</a
+    >
+
     <form method="POST">
+      <div>
+        <label for="img_url">Image URL</label>
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            id="img_url"
+            name="img_url"
+            class="form-control"
+            value="{{menu[0]}}"
+          />
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            onclick="updateImage()"
+          >
+            Upload URL
+          </button>
+        </div>
+        <img
+          id="dynamicImage"
+          src="{{menu[0]}}"
+          alt="Your image will appear here"
+        />
+      </div>
       <input type="hidden" name="id" value="{{ menu[1] }}" />
       <div class="form-group">
         <label for="name">Name</label>
@@ -55,14 +81,17 @@
           value="{{ menu[2] }}"
         />
       </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <input
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          class="form-control"
           id="description"
           name="description"
-          class="form-control"
-          value="{{ menu[3] }}"
-        ></input>
+          rows="3"
+        >
+{{menu[3]}}</textarea
+        >
       </div>
       <div class="form-group">
         <label for="price">Price</label>
@@ -72,33 +101,56 @@
           id="price"
           name="price"
           value="{{ menu[4] }}"
+          step="0.01"
         />
       </div>
 
-      <label for="category">Select a Category:</label>
-      <select class="form-control" id="category" name="category">
-          <option value="" hidden>{{menu[5]}}</option>
-          <option value="Main Course">Main Course</option>
-          <option value="Appetizer">Appetizer</option>
-          <option value="Salad">Salad</option>
-          <option value="Pizza">Pizza</option>
-          <option value="Dessert">Dessert</option>
-          <option value="Pasta">Pasta</option>
-          <option value="Entree">Entree</option>
-          <option value="Mexican">Mexican</option>
-          <option value="Asian">Asian</option>
-          <option value="Seafood">Seafood</option>
-          <option value="Others">Others</option>
-      </select>
+      <div class="my-3">
+        <div class="row">
+          <div class="col">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="category">
+              <option value="" hidden>{{menu[5]}}</option>
+              <option value="Main Course">Main Course</option>
+              <option value="Appetizer">Appetizer</option>
+              <option value="Salad">Salad</option>
+              <option value="Pizza">Pizza</option>
+              <option value="Dessert">Dessert</option>
+              <option value="Pasta">Pasta</option>
+              <option value="Entree">Entree</option>
+              <option value="Mexican">Mexican</option>
+              <option value="Asian">Asian</option>
+              <option value="Seafood">Seafood</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+          <div class="col">
+            <label for="status">Menu Status</label>
+            <select class="form-control" id="status" name="status">
+              <option value="" hidden>{{menu[6]}}</option>
+              <option value="Main Course">Unavailable</option>
+              <option value="Appetizer">Available</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <div class="d-flex justify-content-end">
         <button type="submit" class="btn btn-primary">Save Changes</button>
-    </div>
+      </div>
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       function updateStatus(newStatus) {
         document.getElementById("statusButton").innerText = newStatus;
+      }
+    </script>
+    <script>
+      function updateImage() {
+        var input = document.getElementById("img_url").value;
+        var image = document.getElementById("dynamicImage");
+        image.src = input;
       }
     </script>
   </body>

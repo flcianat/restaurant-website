@@ -194,7 +194,7 @@ def add_menu():
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-        return redirect(url_for('admin_new'))
+        return redirect(url_for('admin_new')+ '#menu')
    return render_template('add_menu.html')
 
 ##
@@ -205,6 +205,7 @@ def add_menu():
 @application.route('/edit_menu/<int:id>', methods=['GET', 'POST'])
 def edit_menu(id):
     if request.method == 'POST':
+        img_url = request.form['img_url']
         name = request.form['name']
         description = request.form['description']
         price = request.form['price']
@@ -212,12 +213,12 @@ def edit_menu(id):
         
         openDb()
     
-        sql = "UPDATE menuitems SET name = %s, description = %s, price = %s, category = %s WHERE MenuItemID = %s"
-        val = (name, description, price, category, id)
+        sql = "UPDATE menuitems SET img_url = %s,name = %s, description = %s, price = %s, category = %s WHERE MenuItemID = %s"
+        val = (img_url, name, description, price, category, id)
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-        return redirect(url_for('admin_new'))
+        return redirect(url_for('admin_new')+ '#menu')
     openDb()
     sql = "SELECT * FROM menuitems WHERE MenuItemID = %s"
     cursor.execute(sql, (id,))
