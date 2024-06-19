@@ -187,10 +187,11 @@ def add_menu():
         description = request.form['description']
         price = request.form['price']
         category = request.form['category']
+        status = "Available"
 
         openDb()
-        sql = "INSERT INTO menuitems (img_url, name, description, price, category) VALUES (%s,%s,%s, %s, %s)"
-        val = (img_url, name,description,price,category)
+        sql = "INSERT INTO menuitems (img_url, name, description, price, category, status) VALUES (%s,%s,%s, %s, %s,%s)"
+        val = (img_url, name,description,price,category, status)
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
@@ -226,19 +227,31 @@ def edit_menu(id):
     closeDb()
     return render_template('edit_menu.html', menu=menu)
 
-@application.route('/update_status/<int:id>', methods=['GET', 'POST'])
-def update_status(id):
+@application.route('/accept/<int:id>', methods=['POST'])
+def accept(id):
     if request.method == 'POST':
-        status = request.form['status']
+        status = 'Accept'
         
         openDb()
-    
-        sql = "UPDATE orders SET status = %s WHERE MenuItemID = %s"
+        sql = "UPDATE orders SET status = %s WHERE OrderID = %s"
         val = (status, id)
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-    return redirect(url_for('admin_new#home'))
+    return redirect(url_for('admin_new') + "#orders")
+
+@application.route('/reject/<int:id>', methods=['POST'])
+def reject(id):
+    if request.method == 'POST':
+        status = 'Reject'
+        
+        openDb()
+        sql = "UPDATE orders SET status = %s WHERE OrderID = %s"
+        val = (status, id)
+        cursor.execute(sql, val)
+        conn.commit()
+        closeDb()
+    return redirect(url_for('admin_new') + "#orders")
   
 
 @application.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -285,16 +298,6 @@ def delete_menu(id):
     conn.commit()
     closeDb()
     return redirect(url_for('admin_new'))
-
-
-@application.route('/hapus/<int:id>', methods=['GET','POST'])
-def hapus(id):
-    openDb()
-    sql = "DELETE FROM anggota WHERE id = %s"
-    cursor.execute(sql, (id,))
-    conn.commit()
-    closeDb()
-    return redirect(url_for('admin'))
 
 ##
 

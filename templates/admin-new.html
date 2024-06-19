@@ -329,13 +329,14 @@ th {
         </div>
       </div>
 
+      <!-- DASHBOARD SECTION -->
       <div class="container-fluid my-2" id="content" style="margin-left: 280px;">
         <div id="home" class="content-section active-section">
           <h3>Dashboard</h3>
           
           <p>Welcome to restaurant admin!</p>
 
-          <div class="row">
+          <div class="row">   
             <div class="col">
               <div
                 class="p-3 px-4 shadow-sm border-black d-flex align-items-center gap-2"
@@ -451,12 +452,7 @@ th {
           </thead>
           <tbody class="text-center">
             {% for order in data_orders %}
-            <tr class="accordion-toggle collapsed"
-            id="accordion1"
-            data-mdb-collapse-init
-            data-mdb-parent="#accordion1"
-            href="#collapseOne"
-            aria-controls="collapseOne">
+            <tr >
               <td>{{ order[0] }}</td>
               <td>{{ order[1] }}</td>
               <td>{{ order[2] }}</td>
@@ -473,18 +469,7 @@ th {
                 {% endif %}
               </td>
               <td>{{ order[5] }}</td>
-              <td>
-                <a href="/detail_order/{{ order[0] }}" class="btn btn-primary">
-                  Detail 
-              </a>
-              <a href="/update_status/{{order[0]}}" class="btn btn-success">
-                <i class="bi bi-check-lg"></i>
-              </a>
-              <a href="" class="btn btn-danger">
-                <i class="bi bi-x-lg"></i>
-              </a>
-             
-            </td>
+           
             </tr>
             {% endfor %}
           
@@ -567,43 +552,51 @@ th {
                 <th>Actions</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>#5552397</td>
-                <td>26 March 2020, 12:42 AM</td>
-                <td>Veronica</td>
-                <td>21 King Street<br>London</td>
-                <td class="status" id="status-1001">Pending</td>
-                <td>$74.92</td>
+            <tbody class="text-center">
+              {% for order in data_orders %}
+              <tr class="accordion-toggle collapsed"
+              id="accordion1"
+              data-mdb-collapse-init
+              data-mdb-parent="#accordion1"
+              href="#collapseOne"
+              aria-controls="collapseOne">
+                <td>{{ order[0] }}</td>
+                <td>{{ order[1] }}</td>
+                <td>{{ order[2] }}</td>
+                <td>{{ order[3] }}</td>
+                <td class="mx-auto">
+                  {% if order[4] == 'Accept'%}
+                  <h5 class="btn btn-primary">
+                  Accepted
+                </h5>
+                  {% elif order[4] == 'Reject' %}
+                  <h5 class="btn btn-secondary">
+                  Rejected
+                </h5>
+                  {% endif %}
+                </td>
+                <td>{{ order[5] }}</td>
                 <td>
-                  <div class="action-buttons">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                      Detail Order
-                    </button>
-                    <button onclick="updateOrderStatus(this, 'Accepted')">
-                      Accept
+                  <a href="/detail_order/{{ order[0] }}" class="btn btn-primary">
+                    Detail 
+                </a>
+            
+                <form action="/accept/{{order[0]}}" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg"></i>
                   </button>
-                  <button onclick="updateOrderStatus(this, 'Rejected')">
-                      Reject
+                </form>
+  
+                <form action="/reject/{{order[0]}}" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-x-lg"></i>
                   </button>
-                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Order #5552397</h1>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body d-flex justify-content-left flex-column">
-                          <p class="">Date : June 17, 2024</p>
-                          <table class="table table-bordered">
-                            <tr><th>Item</th><th>Quantity</th><th>Price</th></tr>
-                            <tr><td>Item 1</td><td>2</td><td>$24.92</td></tr>
-                            <tr><td>Item 2</td><td>1</td><td>$50.00</td></tr>
-                          </table>
-                          <p>Total: $74.92</p>
-                        </td>
-                      </tr>
-                      </tbody>
+                </form>               
+              </td>
+              </tr>
+              {% endfor %}
+            
+            </tbody>
                     </div>
     </main>
 
