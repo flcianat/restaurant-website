@@ -22,6 +22,9 @@ def closeDb():
     conn.close()
 
 # BUAT LOGIN 
+@application.route("/login-2")
+def login2():
+    return render_template('login-2.html')
 @application.route('/login', methods=['GET','POST'])
 def login():
     if request.method == "POST":
@@ -101,29 +104,21 @@ def fetch_menu():
     closeDb()
     return arr_menu
 
-
-
-def fetch_buku():
+def count_menu():
     openDb()
-    books = []
-    sql = "SELECT * FROM buku;"
+    sql = "SELECT COUNT(*) FROM menuitems;"
     cursor.execute(sql)
-    results = cursor.fetchall()
-    for data in results:
-        books.append(data)
+    count = cursor.fetchone()[0]      
     closeDb()
-    return books
+    return count
 
-def fetch_transaksi():
+def count_orders():
     openDb()
-    all_transaksi = []
-    sql = "SELECT * FROM transaksi;"
+    sql = "SELECT COUNT(*) FROM orders;"
     cursor.execute(sql)
-    results = cursor.fetchall()
-    for data in results:
-        all_transaksi.append(data)
+    count = cursor.fetchone()[0]      
     closeDb()
-    return all_transaksi
+    return count
 ##
 
 # TAMPILIN HALAMAN ADMIN & USER
@@ -152,20 +147,15 @@ def admin_new():
     orders = fetch_orders()
     menu = fetch_menu()
     recent = fetch_orders_recent()
-    return render_template("admin-new.html", data_orders=orders, data_menu=menu)
+    all_menu = count_menu()
+    all_orders = count_orders()
+    return render_template("admin-new.html", data_orders=orders, data_menu=menu, count_menu=all_menu, count_orders = all_orders)
 
 @application.route("/detail_order/<int:id>")
 def detail_order(id):
     detail = fetch_orders_detail(id)  
     return render_template("detail_order.html", data_detail=detail, id=id)
 
-@application.route("/menulist")
-def menulist():
-    return render_template("menulist.html")
-
-@application.route("/orderlist")
-def orderlist():
-    return render_template("orderlist.html")
 ##
 
 # ADD
@@ -198,11 +188,12 @@ def edit_menu(id):
         description = request.form['description']
         price = request.form['price']
         category = request.form['category']
+        status = request.form['status']
         
         openDb()
     
-        sql = "UPDATE menuitems SET img_url = %s,name = %s, description = %s, price = %s, category = %s WHERE MenuItemID = %s"
-        val = (img_url, name, description, price, category, id)
+        sql = "UPDATE menuitems SET img_url = %s,name = %s, description = %s, price = %s, category = %s , status = %s WHERE MenuItemID = %s"
+        val = (img_url, name, description, price, category,status, id)
         cursor.execute(sql, val)
         conn.commit()
         closeDb()

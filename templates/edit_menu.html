@@ -41,7 +41,6 @@
     </style>
   </head>
   <body class="poppins-regular">
-
     <h4>Edit Menu {{menu[2]}}</h4>
 
     <form method="POST">
@@ -127,8 +126,8 @@
             <label for="status">Menu Status</label>
             <select class="form-control" id="status" name="status">
               <option value="" hidden>{{menu[6]}}</option>
-              <option value="Main Course">Unavailable</option>
-              <option value="Appetizer">Available</option>
+              <option value="Unavailable">Unavailable</option>
+              <option value="Available">Available</option>
             </select>
           </div>
         </div>
@@ -136,8 +135,8 @@
 
       <div class="d-flex justify-content-end gap-2">
         <a type="button" class="btn btn-secondary" href="/admin-new#menu"
-        >Back</a
-      >
+          >Back</a
+        >
         <button type="submit" class="btn btn-primary">Save Changes</button>
       </div>
     </form>
