@@ -255,37 +255,35 @@ def delete_menu(id):
 ##
 
 # PRINT 
-@application.route('/get_employee_data/<int:id>', methods=['GET'])
-def get_employee_data(id):
-    # Koneksi ke database
+@application.route('/print_order/<int:id>', methods=['GET'])
+def print_order(id):
     connection = pymysql.connect(host='localhost',
                                  user='root',
-                                 password='',  # Password Anda (jika ada)
+                                 password='', 
                                  db='db_restoran',
                                  charset='utf8mb4',
                                  cursorclass=pymysql.cursors.DictCursor)
 
+                                
+
     try:
         with connection.cursor() as cursor:
-            # Query untuk mengambil data pegawai berdasarkan NIK
-            sql = "SELECT * FROM anggota WHERE id = %s"
+            sql = "SELECT orderitems.ItemName, orderitems.Quantity, orderitems.Price, (orderitems.Quantity * orderitems.Price) AS total_item FROM orderitems JOIN orders ON orderitems.OrderID = orders.OrderID WHERE orderitems.OrderID = %s"
             cursor.execute(sql, (id,))
-            employee_data = cursor.fetchone()  # Mengambil satu baris data pegawai
+            detail_order = cursor.fetchall() 
 
-            # Log untuk melihat apakah permintaan diterima dengan benar
             print("Menerima permintaan untuk NIK:", id)
+            print("Data yang dikirim:", detail_order)
 
-            # Log untuk melihat data yang dikirim ke klien
-            print("Data yang dikirim:", employee_data)
-
-            return jsonify(employee_data)  # Mengembalikan data sebagai JSON
+            return jsonify(detail_order) 
 
     except Exception as e:
         print("Error:", e)
         return jsonify({'error': 'Terjadi kesalahan saat mengambil data'}), 500
 
     finally:
-        connection.close()  # Menutup koneksi database setelah selesai
+        connection.close() 
+
 ##
 
 # MAIN PROGRAM      

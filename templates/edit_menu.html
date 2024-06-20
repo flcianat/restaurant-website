@@ -41,9 +41,8 @@
     </style>
   </head>
   <body class="poppins-regular">
-    <a type="button" class="btn btn-primary mb-2" href="/admin-new#menu"
-      >Back</a
-    >
+
+    <h4>Edit Menu {{menu[2]}}</h4>
 
     <form method="POST">
       <div>
@@ -135,7 +134,10 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-end">
+      <div class="d-flex justify-content-end gap-2">
+        <a type="button" class="btn btn-secondary" href="/admin-new#menu"
+        >Back</a
+      >
         <button type="submit" class="btn btn-primary">Save Changes</button>
       </div>
     </form>

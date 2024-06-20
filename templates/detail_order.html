@@ -1,121 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Order #{{ id }}</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order #{{ id }}</title>
 
-    <link
-      rel="canonical"
-      href="https://getbootstrap.com/docs/5.3/examples/sidebars/"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sidebars/" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
+  <!-- Include jsPDF from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-    <style>
-      .poppins-regular {
-        font-family: "Poppins", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-      }
-      body {
-        padding: 80px;
-      }
-    </style>
-  </head>
-  <body class="poppins-regular">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="d-flex gap-3 align-items-center">
-        <a type="button" class="btn btn-primary mb-2" href="/admin-new#orders"
-          >Back</a
-        >
-        <h1>Order Details #{{id}}</h1>
+  <style>
+    .poppins-regular {
+      font-family: "Poppins", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    body {
+      padding: 40px;
+      background-color: #f8f9fa;
+      overflow-y: auto;
+      height: 100vh;
+    }
+
+    .order-card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 70px;
+    }
+
+    .table thead {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    .table tbody tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .table tbody tr:hover {
+      background-color: #e9ecef;
+    }
+
+    .total-row {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body class="poppins-regular">
+  <div class="container">
+    <div class="order-card">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex gap-3 align-items-center">
+          <h1>Order Details #{{id}}</h1>
+        </div>
+        <div>
+          <a type="button" class="btn btn-primary print-btn" href="/print_order/{{id}}" data-id="{{id}}">
+            <i class="bi bi-printer-fill"></i>
+          </a>
+        </div>
       </div>
 
-      <div>
-        <a type="button" class="btn btn-primary">
-          <i class="bi bi-printer-fill"></i>
-        </a>
-      </div>
+      <p><span class="fw-bold">Date:</span> June 17, 2024</p>
+
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        {% for data in data_detail %}
+        <tbody>
+          <tr>
+            <td>{{ data[0] }}</td>
+            <td>{{ data[1] }}</td>
+            <td>{{ data[2] }}</td>
+            <td>{{ data[3] }}</td>
+          </tr>
+        </tbody>
+        {% endfor %}
+        <tfoot>
+          <tr class="total-row">
+            <td colspan="3" class="text-end">Grand Total</td>
+            <td>{{ grand_total }}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <a type="button" class="btn btn-secondary mb-2" href="/admin-new#orders">Back</a>
     </div>
+  </div>
 
-    <p><span class="fw-bold">Date</span> <br />June 17, 2024</p>
-    <p class=""></p>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function updateStatus(newStatus) {
+      document.getElementById("statusButton").innerText = newStatus;
+    }
 
-    <table class="table table-bordered" style="margin-top: 20px">
-      <thead>
-        <tr>
-          <th>Item</th>
-          <th>Qty</th>
-          <th>Price</th>
-          <th>Total</th>
-        </tr>
-      </thead>
-      {% for data in data_detail %}
-      <tbody>
-        <tr>
-          <td>{{ data[0] }}</td>
-          <td>{{ data[1] }}</td>
-          <td>{{ data[2] }}</td>
-          <td>{{ data[3] }}</td>
-        </tr>
-      </tbody>
+    function printToPDF(id) {
+      fetch(`/print_order/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          // Load jsPDF library
+          const { jsPDF } = window.jspdf;
+          var doc = new jsPDF();
 
-      {% endfor %}
-    </table>
-    <div
-      style="margin-left: 800px"
-      class="d-flex justify-content-between align-items-center"
-    >
-      <h5>Grand Total</h5>
-      <h6 style="margin-right: 150px"></h6>
-    </div>
-    <!-- <div class="dropdown">
-      <button
-        id="statusButton"
-        class="btn btn-secondary dropdown-toggle"
-        type="button"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        status
-      </button>
-      <ul class="dropdown-menu">
-        <li>
-          <a class="dropdown-item" href="#" onclick="updateStatus('Accept')"
-            >Accept</a
-          >
-        </li>
-        <li>
-          <a class="dropdown-item" href="#" onclick="updateStatus('Reject')"
-            >Reject</a
-          >
-        </li>
-      </ul>
-    </div> -->
+          doc.text(90, 20, `Order #${id} Details`);
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-      function updateStatus(newStatus) {
-        document.getElementById("statusButton").innerText = newStatus;
-      }
-    </script>
-  </body>
+          const headers = ["Item Name", "Quantity", "Price", "Total"];
+          const colPositions = [20, 80, 140, 180];
+          const startY = 40;
+          const rowHeight = 10;
+          let currentY = startY;
+
+          headers.forEach((header, index) => {
+            doc.text(header, colPositions[index], currentY);
+          });
+        
+          doc.line(20, currentY + 2, 200, currentY + 2);
+          currentY += rowHeight;
+
+        
+          data.forEach(item => {
+            doc.text(item.ItemName, colPositions[0], currentY);
+            doc.text(String(item.Quantity), colPositions[1], currentY);
+            doc.text(String(item.Price), colPositions[2], currentY);
+            doc.text(String(item.total_item), colPositions[3], currentY);
+          
+            currentY += rowHeight;
+            doc.text(20, 90, `Grand Total : ${item.amount}`);
+          });
+
+          doc.line(20, currentY + 2, 200, currentY + 2);
+
+          var pdfOutput = doc.output("datauristring");
+
+          var iframe = `<iframe width='100%' height='100%' src='${pdfOutput}' style='border:none;'></iframe>`;
+          var x = window.open();
+          x.document.open();
+          x.document.write(iframe);
+          x.document.close();
+          // doc.save("DetailOrder.pdf");
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    }
+
+    var printButtons = document.querySelectorAll(".print-btn");
+    printButtons.forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        var id = this.getAttribute("data-id");
+        printToPDF(id);
+      });
+    });
+  </script>
+</body>
 </html>
