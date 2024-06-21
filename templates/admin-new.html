@@ -453,7 +453,7 @@ th {
           <tbody class="text-center">
             {% for order in data_orders %}
             <tr >
-              <td>{{ order[0] }}</td>
+              <td>#{{ order[0] }}</td>
               <td>{{ order[1] }}</td>
               <td>{{ order[2] }}</td>
               <td>{{ order[3] }}</td>
@@ -468,7 +468,7 @@ th {
               </h5>
                 {% endif %}
               </td>
-              <td>{{ order[5] }}</td>
+              <td>${{ order[5] }}</td>
            
             </tr>
             {% endfor %}
@@ -560,7 +560,7 @@ th {
               data-mdb-parent="#accordion1"
               href="#collapseOne"
               aria-controls="collapseOne">
-                <td>{{ order[0] }}</td>
+                <td>#{{ order[0] }}</td>
                 <td>{{ order[1] }}</td>
                 <td>{{ order[2] }}</td>
                 <td>{{ order[3] }}</td>
@@ -575,7 +575,7 @@ th {
                 </h5>
                   {% endif %}
                 </td>
-                <td>{{ order[5] }}</td>
+                <td>${{ order[5] }}</td>
                 <td>
                   <a href="/detail_order/{{ order[0] }}" class="btn btn-primary">
                     Detail 

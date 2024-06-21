@@ -85,15 +85,15 @@
           <tr>
             <td>{{ data[0] }}</td>
             <td>{{ data[1] }}</td>
-            <td>{{ data[2] }}</td>
-            <td>{{ data[3] }}</td>
+            <td>${{ data[2] }}</td>
+            <td>${{ data[3] }}</td>
           </tr>
         </tbody>
         {% endfor %}
         <tfoot>
           <tr class="total-row">
             <td colspan="3" class="text-end">Grand Total</td>
-            <td>{{ total_order }}</td>
+            <td>${{ total_order }}</td>
           </tr>
         </tfoot>
       </table>
@@ -123,8 +123,8 @@
       const tableData = data.detail_order.map(item => [
         item.ItemName,
         item.Quantity,
-        item.Price,
-        item.total_item
+        "$"+item.Price,
+        "$"+item.total_item
       ]);
   
       const tableOptions = {
@@ -153,15 +153,10 @@
       };
 
       doc.autoTable(headers, tableData, tableOptions);
-        
-      var pdfBase64 = btoa(String.fromCharCode.apply(null, pdfOutput)); // Convert Uint8Array to base64 string
-
-      // Set filename based on order details
-    
-
+      
       tableData.push([
         { content: "Grand Total", colSpan: 3, styles: { halign: "center", fillColor: [230, 230, 230] } },
-        data.total_order,
+        "$"+data.total_order,
       ]);
 
 
