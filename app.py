@@ -21,11 +21,28 @@ def closeDb():
     cursor.close()
     conn.close()
 
-# BUAT LOGIN 
-@application.route("/login-2")
-def login2():
-    return render_template('login-2.html')
+# BUAT REGISTER
+@application.route('/register', methods=['GET', 'POST'])
+def register():
+    # if request.method == "POST":
+    #     fullname = request.form["fullname"]
+    #     password = request.form["password"]
+    #     email = request.form["email"]
+    #     born = request.form["born"]
+    #     phonenumber = request.form["phonenumber"]
+    #     status = "Active"
 
+    #     openDb()
+    #     id = generate_id(cursor)
+    #     sql = "INSERT INTO anggota (fullname, password, email, born, phonenumber, status, id) VALUES (%s, %s,%s, %s, %s, %s,%s)"
+    #     val = (fullname, password, email, born, phonenumber, status, id)
+    #     cursor.execute(sql, val)
+    #     conn.commit()
+    #     closeDb()
+    #     return redirect(url_for('user'))
+    return render_template("register.html")
+
+# BUAT LOGIN 
 @application.route('/login', methods=['GET','POST'])
 def login():
     if request.method == "POST":
@@ -39,21 +56,21 @@ def login():
             session["email"] = email
             return redirect(url_for("admin"))
         
-        cursor.execute('SELECT * FROM anggota WHERE email=%s AND password=%s', (email, password))
+        cursor.execute('SELECT * FROM customers WHERE email=%s AND password=%s', (email, password))
         user = cursor.fetchone()
 
         if user:
             session['logged_in'] = user[0] 
             session['email'] = user[1]    
-            return redirect(url_for('user'))
+            return redirect(url_for('usernew'))
         else:
             closeDb() 
-            return render_template("index.html", message="Invalid username or password.")
-    return render_template("index.html")
+            return render_template("login.html", message="Invalid username or password.")
+    return render_template("login.html")
 ##
 
 # LOGOUT
-@application.route("/logout")
+@application.route("/signout")
 def logout():
     session.pop("logged_in", None)
     session.pop("username", None)
@@ -151,33 +168,24 @@ def count_total_income():
     
 ##
 
-# TAMPILIN HALAMAN ADMIN & USER
-@application.route("/admin")
-def admin():
-    current_date = datetime.now().strftime('%Y-%m-%d')
-    books = fetch_buku()
-    transaksi =fetch_transaksi()
-    if "logged_in" in session and session["logged_in"]:
-        return render_template("admin.html", email=session["email"], container=container, books=books, transaksi=transaksi, current_date=current_date)
-    else:
-        return redirect(url_for("login"))
-    
+# TAMPILIN HALAMAN ADMIN & USER    
 @application.route("/user")
 def user():
     if "logged_in" in session and session["logged_in"]:
         return render_template("user.html", email=session["email"], books=books)
     else:
         return redirect(url_for("login"))
-##
 
-# HALAMAN LAIN-LAIN
 @application.route("/usernew")
 def usernew():
     menu = fetch_menu()
-    return render_template('usernew.html',data_menu=menu,)
+    if "logged_in" in session and session["logged_in"]:
+        return render_template("usernew.html", email=session["email"], data_menu=menu)
+    else:
+        return redirect(url_for("login"))
 
-@application.route("/admin-new")
-def admin_new():
+@application.route("/admin")
+def admin():
     orders = fetch_orders()
     menu = fetch_menu()
     recent = fetch_orders_recent()
@@ -185,8 +193,12 @@ def admin_new():
     all_orders = count_orders()
     all_active = count_active_orders()
     all_income = count_total_income()
-    return render_template("admin-new.html", data_orders=orders, data_menu=menu, count_menu=all_menu, count_orders = all_orders,
-    count_active=all_active, count_income=all_income)
+    if "logged_in" in session and session["logged_in"]:
+       return render_template("admin.html", data_orders=orders, data_menu=menu, count_menu=all_menu, count_orders = all_orders,
+    count_active=all_active, count_income=all_income, email=session["email"])
+    else:
+        return redirect(url_for("login"))
+        
 
 @application.route("/detail_order/<int:id>")
 def detail_order(id):
