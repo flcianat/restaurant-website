@@ -25,6 +25,7 @@ def closeDb():
 @application.route("/login-2")
 def login2():
     return render_template('login-2.html')
+
 @application.route('/login', methods=['GET','POST'])
 def login():
     if request.method == "POST":
@@ -93,6 +94,14 @@ def fetch_orders_detail(orderid):
     closeDb()
     return detail
 
+def count_order_amount(orderid):
+    openDb()
+    sql= "SELECT SUM(orderitems.Quantity * orderitems.Price) AS total_order FROM orderitems WHERE orderitems.OrderID = %s"
+    cursor.execute(sql,(orderid,))
+    count = cursor.fetchone()[0]      
+    closeDb()
+    return count
+
 def fetch_menu():
     openDb()
     arr_menu = []
@@ -119,13 +128,33 @@ def count_orders():
     count = cursor.fetchone()[0]      
     closeDb()
     return count
+
+def count_active_orders():
+    openDb()
+    sql = "SELECT COUNT(*) FROM `orders` WHERE Status = 'Accept'"
+    cursor.execute(sql)
+    count = cursor.fetchone()[0]      
+    closeDb()
+    return count
+
+def count_total_income():
+    openDb()
+    sql = "SELECT SUM(Amount) FROM `orders` WHERE Status = 'Accept'"
+    cursor.execute(sql)
+    count = cursor.fetchone()[0]      
+    closeDb()
+    if count is not None:
+        count = int(count)
+    else:
+        count = 0
+    return count
+    
 ##
 
 # TAMPILIN HALAMAN ADMIN & USER
 @application.route("/admin")
 def admin():
     current_date = datetime.now().strftime('%Y-%m-%d')
-    # container = fetch_anggota()
     books = fetch_buku()
     transaksi =fetch_transaksi()
     if "logged_in" in session and session["logged_in"]:
@@ -142,6 +171,10 @@ def user():
 ##
 
 # HALAMAN LAIN-LAIN
+@application.route("/usernew")
+def usernew():
+    return render_template('usernew.html')
+
 @application.route("/admin-new")
 def admin_new():
     orders = fetch_orders()
@@ -149,12 +182,16 @@ def admin_new():
     recent = fetch_orders_recent()
     all_menu = count_menu()
     all_orders = count_orders()
-    return render_template("admin-new.html", data_orders=orders, data_menu=menu, count_menu=all_menu, count_orders = all_orders)
+    all_active = count_active_orders()
+    all_income = count_total_income()
+    return render_template("admin-new.html", data_orders=orders, data_menu=menu, count_menu=all_menu, count_orders = all_orders,
+    count_active=all_active, count_income=all_income)
 
 @application.route("/detail_order/<int:id>")
 def detail_order(id):
     detail = fetch_orders_detail(id)  
-    return render_template("detail_order.html", data_detail=detail, id=id)
+    total = count_order_amount(id)
+    return render_template("detail_order.html", data_detail=detail, id=id,  total_order=total)
 
 ##
 
@@ -253,20 +290,49 @@ def print_order(id):
                                  password='', 
                                  db='db_restoran',
                                  charset='utf8mb4',
-                                 cursorclass=pymysql.cursors.DictCursor)
-
-                                
+                                 cursorclass=pymysql.cursors.DictCursor)                  
 
     try:
         with connection.cursor() as cursor:
-            sql = "SELECT orderitems.ItemName, orderitems.Quantity, orderitems.Price, (orderitems.Quantity * orderitems.Price) AS total_item FROM orderitems JOIN orders ON orderitems.OrderID = orders.OrderID WHERE orderitems.OrderID = %s"
-            cursor.execute(sql, (id,))
-            detail_order = cursor.fetchall() 
+            sql_detail_order = """
+            SELECT 
+                ItemName, 
+                Quantity, 
+                Price, 
+                (Quantity * Price) AS total_item
+            FROM 
+                orderitems 
+                JOIN orders ON orderitems.OrderID = orders.OrderID 
+            WHERE 
+                orderitems.OrderID = %s
+            """
+
+            sql_total_order = """
+            SELECT 
+                SUM(Quantity * Price) AS total_order
+            FROM 
+                orderitems 
+            WHERE 
+                OrderID = %s
+            """
+
+            cursor.execute(sql_detail_order, (id,))
+            detail_order = cursor.fetchall()
+
+            cursor.execute(sql_total_order, (id,))
+            total_order = cursor.fetchone()['total_order']
 
             print("Menerima permintaan untuk NIK:", id)
-            print("Data yang dikirim:", detail_order)
+            print("Detail Order:", detail_order)
+            print("Total Order:", total_order)
 
-            return jsonify(detail_order) 
+            # Combine detail_order and total_order into a single dictionary
+            combined_result = {
+                "detail_order": detail_order,
+                "total_order": total_order
+            }
+
+            return jsonify(combined_result)
 
     except Exception as e:
         print("Error:", e)

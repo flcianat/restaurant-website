@@ -15,7 +15,7 @@
 
   <!-- Include jsPDF from CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
   <style>
     .poppins-regular {
       font-family: "Poppins", sans-serif;
@@ -93,7 +93,7 @@
         <tfoot>
           <tr class="total-row">
             <td colspan="3" class="text-end">Grand Total</td>
-            <td>{{ grand_total }}</td>
+            <td>{{ total_order }}</td>
           </tr>
         </tfoot>
       </table>
@@ -106,53 +106,78 @@
     function updateStatus(newStatus) {
       document.getElementById("statusButton").innerText = newStatus;
     }
-
     function printToPDF(id) {
-      fetch(`/print_order/${id}`)
-        .then(response => response.json())
-        .then(data => {
-          // Load jsPDF library
-          const { jsPDF } = window.jspdf;
-          var doc = new jsPDF();
+  fetch(`/print_order/${id}`)
+    .then(response => response.json())
+    .then(data => {
+      const { jsPDF } = window.jspdf;
+      var doc = new jsPDF();
 
-          doc.text(90, 20, `Order #${id} Details`);
+      doc.setFontSize(20);
+      doc.setFont('helvetica');
+      doc.text(`Order #${id} Details`, 110, 30, { align: "center" });
 
-          const headers = ["Item Name", "Quantity", "Price", "Total"];
-          const colPositions = [20, 80, 140, 180];
-          const startY = 40;
-          const rowHeight = 10;
-          let currentY = startY;
+      const headers = ["Item Name", "Quantity", "Price", "Total"];
+      const colWidths = [50, 30, 30, 30];    
 
-          headers.forEach((header, index) => {
-            doc.text(header, colPositions[index], currentY);
-          });
+      const tableData = data.detail_order.map(item => [
+        item.ItemName,
+        item.Quantity,
+        item.Price,
+        item.total_item
+      ]);
+  
+      const tableOptions = {
+        startY: 40,
+        headStyles: {
+          fillColor: [65, 105, 225], 
+          textColor: [255, 255, 255], 
+          halign: 'center'
+        },
+        bodyStyles: {
+          fillColor: [255, 255, 255], 
+          textColor: [0, 0, 0],
+          halign: 'center'
+        },
+        columnStyles: {
+          ItemName: { cellWidth: colWidths[0] },
+          Quantity: { cellWidth: colWidths[1] },
+          Price: { cellWidth: colWidths[2] },
+          Total: { cellWidth: colWidths[3] }
+        },
+        didDrawCell: function (data) {
+          if (data.column.index === 0) {
+            data.cell.styles.halign = 'left';
+          }
+        }
+      };
+
+      doc.autoTable(headers, tableData, tableOptions);
         
-          doc.line(20, currentY + 2, 200, currentY + 2);
-          currentY += rowHeight;
+      var pdfBase64 = btoa(String.fromCharCode.apply(null, pdfOutput)); // Convert Uint8Array to base64 string
 
-        
-          data.forEach(item => {
-            doc.text(item.ItemName, colPositions[0], currentY);
-            doc.text(String(item.Quantity), colPositions[1], currentY);
-            doc.text(String(item.Price), colPositions[2], currentY);
-            doc.text(String(item.total_item), colPositions[3], currentY);
-          
-            currentY += rowHeight;
-            doc.text(20, 90, `Grand Total : ${item.amount}`);
-          });
+      // Set filename based on order details
+    
 
-          doc.line(20, currentY + 2, 200, currentY + 2);
+      tableData.push([
+        { content: "Grand Total", colSpan: 3, styles: { halign: "center", fillColor: [230, 230, 230] } },
+        data.total_order,
+      ]);
 
-          var pdfOutput = doc.output("datauristring");
 
-          var iframe = `<iframe width='100%' height='100%' src='${pdfOutput}' style='border:none;'></iframe>`;
-          var x = window.open();
-          x.document.open();
-          x.document.write(iframe);
-          x.document.close();
-          // doc.save("DetailOrder.pdf");
-        })
-        .catch(error => {
+      doc.autoTable(headers, tableData, tableOptions);
+
+      var pdfOutput = doc.output("datauristring");
+
+      var iframe = `<iframe width='100%' height='100%' src='${pdfOutput}' style='border:none;'></iframe>`;
+      var x = window.open();
+
+      x.document.open();
+      x.document.write(iframe);
+      x.document.close();
+      // doc.save("DetailOrder.pdf");
+    })
+         .catch(error => {
           console.error("Error:", error);
         });
     }

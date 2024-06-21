@@ -30,19 +30,40 @@
     />
 
     <style>
-      .poppins-regular {
-        font-family: "Poppins", sans-serif;
-        font-weight: 400;
-        font-style: normal;
-      }
       body {
-        padding: 80px;
+        font-family: "Poppins", sans-serif;
+        padding: 20px;
+        background-color: #f8f9fa;
+      }
+
+      .form-group label {
+        font-weight: 600;
+      }
+
+      #dynamicImage {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+        margin-top: 10px;
+        border: 2px solid #ced4da;
+        border-radius: 5px;
+      }
+
+      .form-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 1000px;
+        margin: 0 auto;
       }
     </style>
   </head>
   <body class="poppins-regular">
-    <h4>Edit Menu {{menu[2]}}</h4>
-
+    <div class="container">
+      <div class="form-container">
+        <h1 class="mb-4">Edit Menu</h1>
+    
     <form method="POST">
       <div>
         <label for="img_url">Image URL</label>
@@ -69,7 +90,7 @@
         />
       </div>
       <input type="hidden" name="id" value="{{ menu[1] }}" />
-      <div class="form-group">
+      <div class="form-group ; mb-3 ">
         <label for="name">Name</label>
         <input
           type="text"
@@ -87,11 +108,10 @@
           id="description"
           name="description"
           rows="3"
-        >
-{{menu[3]}}</textarea
-        >
+        >{{menu[3]}}</textarea>
       </div>
-      <div class="form-group">
+      
+      <div class="form-group ; mb-3">
         <label for="price">Price</label>
         <input
           type="number"
@@ -103,7 +123,7 @@
         />
       </div>
 
-      <div class="my-3">
+      <div class="mb-3">
         <div class="row">
           <div class="col">
             <label for="category">Category</label>
@@ -126,17 +146,15 @@
             <label for="status">Menu Status</label>
             <select class="form-control" id="status" name="status">
               <option value="" hidden>{{menu[6]}}</option>
-              <option value="Unavailable">Unavailable</option>
-              <option value="Available">Available</option>
+              <option value="Main Course">Unavailable</option>
+              <option value="Appetizer">Available</option>
             </select>
           </div>
         </div>
       </div>
 
-      <div class="d-flex justify-content-end gap-2">
-        <a type="button" class="btn btn-secondary" href="/admin-new#menu"
-          >Back</a
-        >
+      <div class="mb-3 d-flex justify-content-end gap-2">
+        <a href="/admin-new#menu" class="btn btn-secondary">Cancel</a>
         <button type="submit" class="btn btn-primary">Save Changes</button>
       </div>
     </form>
