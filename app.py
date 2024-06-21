@@ -173,7 +173,8 @@ def user():
 # HALAMAN LAIN-LAIN
 @application.route("/usernew")
 def usernew():
-    return render_template('usernew.html')
+    menu = fetch_menu()
+    return render_template('usernew.html',data_menu=menu,)
 
 @application.route("/admin-new")
 def admin_new():

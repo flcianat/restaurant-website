@@ -331,9 +331,9 @@ th {
         </a>
 
         <hr />
-        <a href="#home" class="nav-link active" data-target="home">
-          <i class="bi bi-house-door-fill"></i>
-          Dashboard
+        <a href="#orders" class="nav-link" data-target="orders">
+          <i class="bi bi-receipt-cutoff"></i>
+          My Orders
         </a>
 
         <a href="#menu" class="nav-link" data-target="menu">
@@ -341,10 +341,12 @@ th {
           Menu
         </a>
 
-        <a href="#orders" class="nav-link" data-target="orders">
-          <i class="bi bi-receipt-cutoff"></i>
-          Orders
+        <a href="#home" class="nav-link active" data-target="home">
+          <i class="bi bi-basket"></i>
+          Cart
         </a>
+
+      
 
         <div class="dropdown mt-auto">
           <a
@@ -380,31 +382,65 @@ th {
     <p>Hello, welcome to the restaurant!</p>
 
     <!-- Menu Slideshow -->
-    <div class="row">
-      <div class="col">
-        <div id="menu-slideshow" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            {% for menu in data_menu %}
-            <div class="carousel-item {% if loop.first %}active{% endif %}">
-              <img src="{{ menu[0] }}" alt="{{ menu[1] }}" class="d-block w-100">
-              <div class="carousel-caption">
-                <h5>{{ menu[2] }}</h5>
-                <p>{{ menu[3] }}</p>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#menu-slideshow" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#menu-slideshow" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
-        </div>
+   
+     
+       
+      <div id="menu-slideshow" class="content-section">
+        <div class="d-flex justify-content-between align-items-center">
+        <h3>Menu</h3>
+        <a href="/add_menu" class="btn btn-primary">+ Add Menu</a>
       </div>
+        <p>Showing {{count_menu}} entries</p>
+       
+        <div class="album-grid">
+          {% for menu in data_menu %}
+            <div class="album-card">
+                 <div style="width: 150;">
+                <img src="{{menu[0]}}" alt="{{menu[1]}}">
+              </div>
+            
+                <div class="album-card-body">
+                    <h5 class="album-card-title">{{ menu[2]}}</h5>
+                    <p class="album-card-text">{{ menu[3]}}</p>
+                    <div class="d-flex gap-2">
+                      {% if menu[6] == "Unavailable"%}
+                      <p class="album-card-text badge text-bg-secondary">{{ menu[6]}}</p>
+                      {% else %}
+                      <p class="album-card-text badge text-bg-success">{{ menu[6]}}</p>
+                      {% endif %}
+                
+                    <p class="album-card-text badge text-bg-primary">{{ menu[5]}}</p>
+                  </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                    <h5>${{ menu[4]}}</h5>
+                    <div class="d-flex gap-2">
+                      <a href="/edit_menu/{{menu[1]}}" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>
+                      <a href="/delete_menu/{{menu[1]}}" class="btn btn-danger"><i class="bi bi-trash3-fill"></i></a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+              {% endfor %}
+         
+        </div>
+               <nav class="mt-3 mb-3 d-flex justify-content-center" aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item" aria-current="page">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+     
+     
       <!-- Recent Orders Table -->
       <div class="mt-4">
         <h5>Recent Orders</h5>
