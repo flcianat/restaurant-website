@@ -168,6 +168,7 @@ def count_total_income():
     
 ##
 
+
 # TAMPILIN HALAMAN ADMIN & USER    
 @application.route("/user")
 def user():
@@ -175,6 +176,11 @@ def user():
         return render_template("user.html", email=session["email"], books=books)
     else:
         return redirect(url_for("login"))
+    
+@application.route("/homepage")
+def homepage():
+    menu = fetch_menu()
+    return render_template("homepage.html",data_menu=menu)
 
 @application.route("/usernew")
 def usernew():
@@ -225,7 +231,7 @@ def add_menu():
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-        return redirect(url_for('admin_new')+ '#menu')
+        return redirect(url_for('admin')+ '#menu')
    return render_template('add_menu.html')
 ##
 
@@ -247,7 +253,7 @@ def edit_menu(id):
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-        return redirect(url_for('admin_new')+ '#menu')
+        return redirect(url_for('admin')+ '#menu')
     openDb()
     sql = "SELECT * FROM menuitems WHERE MenuItemID = %s"
     cursor.execute(sql, (id,))
@@ -266,7 +272,7 @@ def accept(id):
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-    return redirect(url_for('admin_new') + "#orders")
+    return redirect(url_for('admin') + "#orders")
 
 @application.route('/reject/<int:id>', methods=['POST'])
 def reject(id):
@@ -279,7 +285,7 @@ def reject(id):
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-    return redirect(url_for('admin_new') + "#orders")
+    return redirect(url_for('admin') + "#orders")
 
 ##
 
@@ -291,7 +297,7 @@ def delete_menu(id):
     cursor.execute(sql, (id,))
     conn.commit()
     closeDb()
-    return redirect(url_for('admin_new'))
+    return redirect(url_for('admin'))
 
 ##
 
