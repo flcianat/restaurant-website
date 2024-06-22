@@ -96,24 +96,24 @@
         {% for menu in data_menu %}
         <div class="album-card">
           <div style="width: 150">
-            <img src="{{menu[0]}}" alt="{{menu[1]}}" />
+            <img src="{{ menu[0] }}" alt="{{ menu[1] }}" />
           </div>
           <div class="album-card-body">
-            <h5 class="album-card-title">{{ menu[2]}}</h5>
-            <p class="album-card-text">{{ menu[3]}}</p>
+            <h5 class="album-card-title">{{ menu[2] }}</h5>
+            <p class="album-card-text">{{ menu[3] }}</p>
             <div class="d-flex gap-2">
-              {% if menu[6] == "Unavailable"%}
+              {% if menu[6] == "Unavailable" %}
               <p class="album-card-text badge text-bg-secondary">
-                {{ menu[6]}}
+                {{ menu[6] }}
               </p>
               {% else %}
-              <p class="album-card-text badge text-bg-success">{{ menu[6]}}</p>
+              <p class="album-card-text badge text-bg-success">{{ menu[6] }}</p>
               {% endif %}
-              <p class="album-card-text badge text-bg-primary">{{ menu[5]}}</p>
+              <p class="album-card-text badge text-bg-primary">{{ menu[5] }}</p>
             </div>
             <div class="d-flex align-items-center justify-content-between">
-              <h5>${{ menu[4]}}</h5>
-              {% if menu[6] == "Unavailable"%}
+              <h5>${{ menu[4] }}</h5>
+              {% if menu[6] == "Unavailable" %}
               <button class="btn btn-primary disabled">Add to Cart</button>
               {% else %}
               <button
@@ -140,7 +140,7 @@
               class="form-control"
               id="customer-name"
               placeholder="Customer Name"
-              value="{{name}}"
+              value="{{ name }}"
               required
             />
             <input
@@ -156,46 +156,110 @@
           </div>
         </div>
       </div>
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
+      <!-- Cart Display Section -->
+      <div class="container mt-4">
+        <h4>My Cart</h4>
+        <table class="table table-bordered" id="cart-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="cart-table-body"></tbody>
+          <tfoot>
+            <tr>
+              <th colspan="3" class="text-end">Total</th>
+              <td id="cart-total">$0.00</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       const cart = [];
+
+      function renderCart() {
+        const cartTableBody = document.getElementById("cart-table-body");
+        const cartTotalElement = document.getElementById("cart-total");
+        cartTableBody.innerHTML = "";
+
+        let total = 0;
+
+        cart.forEach((item) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+          <td>${item.name}</td>
+          <td>$${item.price.toFixed(2)}</td>
+          <td>${item.quantity}</td>
+          <td>$${(item.price * item.quantity).toFixed(2)}</td>
+          <td>
+            <button class="btn btn-danger btn-sm remove-from-cart" data-id="${
+              item.id
+            }">Remove</button>
+          </td>
+        `;
+          cartTableBody.appendChild(row);
+          total += item.price * item.quantity;
+        });
+
+        cartTotalElement.textContent = `$${total.toFixed(2)}`;
+
+        document.querySelectorAll(".remove-from-cart").forEach((button) => {
+          button.addEventListener("click", () => {
+            const id = button.getAttribute("data-id");
+            removeFromCart(id);
+          });
+        });
+      }
+
+      function addToCart(id, name, price) {
+        const item = cart.find((item) => item.id === id);
+        if (item) {
+          item.quantity += 1;
+        } else {
+          cart.push({ id, name, price, quantity: 1 });
+        }
+        renderCart();
+      }
+
+      function removeFromCart(id) {
+        const index = cart.findIndex((item) => item.id === id);
+        if (index !== -1) {
+          cart.splice(index, 1);
+        }
+        renderCart();
+      }
 
       document.querySelectorAll(".add-to-cart").forEach((button) => {
         button.addEventListener("click", () => {
           const id = button.getAttribute("data-id");
           const name = button.getAttribute("data-name");
           const price = parseFloat(button.getAttribute("data-price"));
-
-          const item = cart.find((item) => item.id === id);
-          if (item) {
-            item.quantity += 1;
-          } else {
-            cart.push({ id, name, price, quantity: 1 });
-          }
-          console.log(cart);
+          addToCart(id, name, price);
         });
       });
 
       document.getElementById("submit-cart").addEventListener("click", () => {
-        const customerNameElement = document.getElementById("customer-name");
-        const customerLocationElement =
-          document.getElementById("customer-location");
+        const customerName = document.getElementById("customer-name").value;
+        const customerLocation =
+          document.getElementById("customer-location").value;
 
-        if (!customerNameElement || !customerLocationElement) {
+        if (!customerName || !customerLocation) {
           alert("Customer details are required.");
           return;
         }
 
-        const customerDetails = {
-          name: customerNameElement.value,
-          location: customerLocationElement.value,
-        };
-
         const payload = {
           cart,
-          customer: customerDetails,
+          customer: { name: customerName, location: customerLocation },
         };
 
         fetch('{{ url_for("submit_cart") }}', {
@@ -211,6 +275,7 @@
               alert("Order placed successfully!");
               window.location.href = data.redirect;
               cart.length = 0;
+              renderCart();
             } else {
               alert("There was an error placing your order.");
               console.error("Error:", data.error);
@@ -220,6 +285,8 @@
             console.error("Error:", error);
           });
       });
+
+      renderCart();
     </script>
   </body>
 </html>

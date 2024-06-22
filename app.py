@@ -172,12 +172,11 @@ def count_total_income():
     else:
         count = 0
     return count
-    
+
 ##
 
 
-# TAMPILIN HALAMAN ADMIN & USER    
-    
+# ADMIN, USER, HOMEPAGE    
 @application.route("/homepage")
 def homepage():
     menu = fetch_menu()
