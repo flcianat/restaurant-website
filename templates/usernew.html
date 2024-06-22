@@ -9,7 +9,7 @@
       content="Mark Otto, Jacob Thornton, and Bootstrap contributors"
     />
     <meta name="generator" content="Hugo 0.122.0" />
-    <title>Admin-New</title>
+    <title>User</title>
 
     <link
       rel="canonical"
@@ -367,8 +367,13 @@ th {
            <div style="width: 150;">
           <img src="{{menu[0]}}" alt="{{menu[1]}}">
         </div>
-      
+       
           <div class="album-card-body">
+            <!-- <input type="text" name="itemID" id="itemID" value="{{menu[1]}}" hidden>
+            <input type="text" name="itemName" id="itemName" value="{{menu[2]}}" hidden>
+            <input type="text" name="quantity" id="quantity" value="{{menu[3]}}" hidden>
+            <input type="text" name="price" id="price" value="{{menu[4]}}" hidden>
+            <input type="text" name="total" id="total" value="{{menu[5]}}" hidden> -->
               <h5 class="album-card-title">{{ menu[2]}}</h5>
               <p class="album-card-text">{{ menu[3]}}</p>
               <div class="d-flex gap-2">
@@ -382,7 +387,9 @@ th {
             </div>
               <div class="d-flex align-items-center justify-content-between">
               <h5>${{ menu[4]}}</h5>
+             
               <button class="btn btn-primary" onclick="addToCart('{{menu[1]}}', '{{menu[2]}}', '{{menu[4]}}')">Add to Cart</button>
+          
             </div>
           </div>
       </div>
@@ -407,11 +414,10 @@ th {
 </div>
 
 
-
 <div id="orders" class="content-section">
   <h3>Orders</h3>
   <p>Here is the order list</p>
-  <table id="orders-table">
+  <table >
     <thead>
       <tr>
         <th>Order ID</th>
@@ -419,34 +425,37 @@ th {
         <th>Location</th>
         <th>Status</th>
         <th>Amount</th>
+        <th></th>
       </tr>
     </thead>
-    <tbody class="text-center" id="orders-tbody">
-      {% for order in data_orders %}
-        {% if order.id == orderId %}
-          <tr class="accordion-toggle collapsed"
-              id="accordion1"
-              data-mdb-collapse-init
-              data-mdb-parent="#accordion1"
-              href="#collapseOne"
-              aria-controls="collapseOne">
-            <td>{{ order.id }}</td>
-            <td>{{ order.date }}</td>
-            <td>{{ order.location }}</td>
+    <tbody class="text-center">
+      {% for order in data_order %}
+    
+          <tr>
+            <td>#{{ order[0] }}</td>
+            <td>{{ order[1] }}</td>
+            <td>{{ order[2] }}</td>
             <td class="mx-auto">
-              {% if order.status == 'Accept' %}
+              {% if order[4] == 'Accept' %}
                 <h5 class="btn btn-primary">
                   Accepted
                 </h5>
-              {% elif order.status == 'Reject' %}
+              {% elif order[4] == 'Reject' %}
                 <h5 class="btn btn-secondary">
                   Rejected
                 </h5>
               {% endif %}
+            
             </td>
-            <td>${{ order.amount }}</td>
+            <td>${{ order[5] }}</td>
+            <td>
+              <a href="#" class="btn btn-danger">
+                <!-- <i class="bi bi-x-lg"></i> -->
+                 Cancel
+              </a>
+            </td>
           </tr>
-        {% endif %}
+
       {% endfor %}
     </tbody>
   </table>
@@ -474,13 +483,11 @@ th {
           document.getElementById(target).classList.add("active-section");
           this.classList.add("active");
 
-          // Update the URL hash
           window.location.hash = target;
         });
       });
 
-      // Handle loading section from URL hash
-      const currentHash = window.location.hash.substring(1); // Remove the #
+      const currentHash = window.location.hash.substring(1); 
       if (currentHash) {
         const activeLink = document.querySelector(`.nav-link[data-target="${currentHash}"]`);
         if (activeLink) {
@@ -490,93 +497,10 @@ th {
     });
 
 
-function addToCart(itemId, itemName, itemPrice) {
-  let existingItem = cart.find(item => item.id === itemId);
-  if (existingItem) {
-    existingItem.quantity++;
-  } else {
-    cart.push({ id: itemId, name: itemName, price: itemPrice, quantity: 1 });
-  }
-  updateCartTable();
-}
 
-function updateCartTable() {
-  const cartTableBody = document.getElementById('cart-items');
-  cartTableBody.innerHTML = '';
-  cart.forEach(item => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.price}</td>
-      <td>${item.quantity}</td>
-      <td>${item.price * item.quantity}</td>
-      <td><button class="btn btn-danger" onclick="removeFromCart('${item.id}')">Remove</button></td>
-    `;
-    cartTableBody.appendChild(row);
-  });
-}
 
-function removeFromCart(itemId) {
-  cart = cart.filter(item => item.id !== itemId);
-  updateCartTable();
-}
 
-let cart = [];
 
-function addToCart(itemId, itemName, itemPrice) {
-  let existingItem = cart.find(item => item.id === itemId);
-  if (existingItem) {
-    existingItem.quantity++;
-  } else {
-    cart.push({ id: itemId, name: itemName, price: itemPrice, quantity: 1 });
-  }
-  updateCartTable();
-}
-
-function updateCartTable() {
-  const cartTableBody = document.getElementById('cart-items');
-  cartTableBody.innerHTML = '';
-  cart.forEach(item => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.price}</td>
-      <td>${item.quantity}</td>
-      <td>${item.price * item.quantity}</td>
-      <td><button class="btn btn-danger" onclick="removeFromCart('${item.id}')">Remove</button></td>
-    `;
-    cartTableBody.appendChild(row);
-  });
-}
-
-function cancelOrder() {
-    updateCartTable();
-    document.getElementById('menu').classList.add('active-section');
-    document.getElementById('cart').classList.remove('active-section');
-  }
-  function placeOrder() {
-  const order = { id: orderId, items: cart };
-  orders.push(order);
-  cart = [];
-
-  // Move cart items to orders table
-  const ordersTableBody = document.getElementById('orders-tbody');
-  ordersTableBody.innerHTML = '';
-  order.items.forEach(item => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${item.name}</td>
-      <td>${item.price}</td>
-      ' <td>${item.quantity}</td>
-      <td>${item.location}</td>
-      <td>${item.status}</td>
-      <td>${item.price * item.quantity}</td>
-    `;
-    ordersTableBody.appendChild(row);
-  });
-
-  // Clear cart table
-  updateCartTable();
 
   // Navigate to orders section
   document.getElementById('orders').classList.add('active-section');
@@ -584,7 +508,7 @@ function cancelOrder() {
 
   // Redirect to orders section
   window.location.hash = 'orders';
-}
+
 
       function updateStatus(newStatus) {
     document.getElementById('statusButton').innerText = newStatus;

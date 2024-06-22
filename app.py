@@ -24,22 +24,18 @@ def closeDb():
 # BUAT REGISTER
 @application.route('/register', methods=['GET', 'POST'])
 def register():
-    # if request.method == "POST":
-    #     fullname = request.form["fullname"]
-    #     password = request.form["password"]
-    #     email = request.form["email"]
-    #     born = request.form["born"]
-    #     phonenumber = request.form["phonenumber"]
-    #     status = "Active"
+    if request.method == "POST":
+        name = request.form["name"]
+        password = request.form["password"]
+        email = request.form["email"]
 
-    #     openDb()
-    #     id = generate_id(cursor)
-    #     sql = "INSERT INTO anggota (fullname, password, email, born, phonenumber, status, id) VALUES (%s, %s,%s, %s, %s, %s,%s)"
-    #     val = (fullname, password, email, born, phonenumber, status, id)
-    #     cursor.execute(sql, val)
-    #     conn.commit()
-    #     closeDb()
-    #     return redirect(url_for('user'))
+        openDb()
+        sql = "INSERT INTO customers (name, password, email) VALUES (%s, %s,%s)"
+        val = (name, password, email)
+        cursor.execute(sql, val)
+        conn.commit()
+        closeDb()
+        return redirect(url_for('usernew'))
     return render_template("register.html")
 
 # BUAT LOGIN 
@@ -83,6 +79,17 @@ def fetch_orders():
     arr_orders = []
     sql = "SELECT * FROM orders;"
     cursor.execute(sql)
+    results = cursor.fetchall()
+    for data in results:
+        arr_orders.append(data)
+    closeDb()
+    return arr_orders
+
+def fetch_orders_user(id):
+    openDb()
+    arr_orders = []
+    sql = "SELECT * FROM orders WHERE customerid = '%s';"
+    cursor.execute(sql,(id,))
     results = cursor.fetchall()
     for data in results:
         arr_orders.append(data)
@@ -185,8 +192,11 @@ def homepage():
 @application.route("/usernew")
 def usernew():
     menu = fetch_menu()
+    id = session["logged_in"]
+    order=fetch_orders_user(id)
     if "logged_in" in session and session["logged_in"]:
-        return render_template("usernew.html", email=session["email"], data_menu=menu)
+        return render_template("usernew.html", email=session["email"], data_menu=menu, idcustomer=session["logged_in"],
+                               data_order=order)
     else:
         return redirect(url_for("login"))
 
@@ -233,6 +243,26 @@ def add_menu():
         closeDb()
         return redirect(url_for('admin')+ '#menu')
    return render_template('add_menu.html')
+
+@application.route('/add_item', methods=['POST'])
+def add_item():
+   if request.method == 'POST':
+        itemID = request.form['itemID']
+        itemName = request.form['itemName']
+        quantity = request.form['quantity']
+        price = request.form['price']
+        total = request.form['total']
+
+        openDb()
+        sql = "INSERT INTO orderitems (itemID,itemName,quantity, price, total) VALUES (%s,%s,%s, %s,%s)"
+        val = (itemID,itemName,quantity,price,total)
+        cursor.execute(sql, val)
+        conn.commit()
+        closeDb() 
+        return redirect(url_for('usernew')+ '#menu')
+   return render_template('usernew.html')
+
+
 ##
 
 # EDIT 
