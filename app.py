@@ -35,7 +35,7 @@ def register():
         cursor.execute(sql, val)
         conn.commit()
         closeDb()
-        return redirect(url_for('usernew'))
+        return redirect(url_for('user'))
     return render_template("register.html")
 
 # BUAT LOGIN 
@@ -58,7 +58,7 @@ def login():
         if user:
             session['logged_in'] = user[0] 
             session['email'] = user[1]    
-            return redirect(url_for('usernew'))
+            return redirect(url_for('user'))
         else:
             closeDb() 
             return render_template("login.html", message="Invalid username or password.")
@@ -177,25 +177,19 @@ def count_total_income():
 
 
 # TAMPILIN HALAMAN ADMIN & USER    
-@application.route("/user")
-def user():
-    if "logged_in" in session and session["logged_in"]:
-        return render_template("user.html", email=session["email"], books=books)
-    else:
-        return redirect(url_for("login"))
     
 @application.route("/homepage")
 def homepage():
     menu = fetch_menu()
     return render_template("homepage.html",data_menu=menu)
 
-@application.route("/usernew")
-def usernew():
+@application.route("/user")
+def user():
     menu = fetch_menu()
     id = session["logged_in"]
     order=fetch_orders_user(id)
     if "logged_in" in session and session["logged_in"]:
-        return render_template("usernew.html", email=session["email"], data_menu=menu, idcustomer=id,
+        return render_template("user.html", email=session["email"], data_menu=menu, idcustomer=id,
                                data_order=order)
     else:
         return redirect(url_for("login"))
@@ -220,7 +214,8 @@ def admin():
 def detail_order(id):
     detail = fetch_orders_detail(id)  
     total = count_order_amount(id)
-    return render_template("detail_order.html", data_detail=detail, id=id,  total_order=total)
+    email = session['email']
+    return render_template("detail_order.html", data_detail=detail, id=id,  total_order=total, role=email)
 
 ##
 
@@ -265,22 +260,48 @@ def add_item(id):
 
 @application.route('/select_menu/<int:id>', methods=['GET','POST'])
 def select_menu(id):
-   if request.method == 'POST':
-        itemID = request.form['itemID']
-        itemName = request.form['itemName']
-        quantity = request.form['quantity']
-        price = request.form['price']
-        total = request.form['total']
+   return render_template('select_menu.html',data_menu=fetch_menu(), name=session['email'])
 
+@application.route('/submit_cart', methods=['POST'])
+def submit_cart():
+    data = request.json
+    cart = data['cart']
+    customer = data['customer']
+    
+    customer_name = customer['name']
+    location = customer['location']
+    status = "Pending"
+    amount = sum(item['price'] * item['quantity'] for item in cart)
+    customer_id = session['logged_in']
+
+    try:
         openDb()
-        sql = "INSERT INTO orderitems (itemID,itemName,quantity, price, total) VALUES (%s,%s,%s, %s,%s)"
-        val = (itemID,itemName,quantity,price,total)
-        cursor.execute(sql, val)
+    
+        order_sql = """
+            INSERT INTO orders (OrderDate, CustomerName, Location, Status, Amount, CustomerID)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        order_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        order_values = (order_date, customer_name, location, status, amount, customer_id)
+        cursor.execute(order_sql, order_values)
+        
+        orderID = cursor.lastrowid
+        
+        for item in cart:
+            item_sql = """
+                INSERT INTO orderitems (OrderID, ItemName, Price, Quantity, Total)
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            item_values = (orderID, item['name'], item['price'], item['quantity'], item['quantity'] * item['price'])
+            cursor.execute(item_sql, item_values)
+        
         conn.commit()
-        closeDb() 
-        return redirect(url_for('usernew')+'#orders')
-   return render_template('select_menu.html',data_menu=fetch_menu())
-
+        closeDb()
+        return jsonify({'success': True, 'redirect': url_for('user') + '#orders'})
+    except Exception as e:
+        print(f"Error placing order: {e}")
+        closeDb()
+        return jsonify({'success': False, 'error': str(e)})
 
 ##
 
@@ -348,6 +369,17 @@ def delete_menu(id):
     closeDb()
     return redirect(url_for('admin'))
 
+@application.route('/cancel/<int:id>', methods=['GET','POST'])
+def cancel(id):
+    openDb()
+    sql = "DELETE FROM orderitems WHERE OrderID = %s"
+    cursor.execute(sql, (id,))
+
+    sql = "DELETE FROM orders WHERE OrderID = %s"
+    cursor.execute(sql, (id,))
+    conn.commit()
+    closeDb()
+    return redirect(url_for('user'))
 ##
 
 # PRINT 

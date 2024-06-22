@@ -466,6 +466,10 @@ th {
                 <h5 class="btn btn-secondary">
                 Rejected
               </h5>
+              {% else %}
+              <h5 class="btn btn-warning">
+              Pending
+            </h5>
                 {% endif %}
               </td>
               <td>${{ order[5] }}</td>
@@ -572,6 +576,10 @@ th {
                   {% elif order[4] == 'Reject' %}
                   <h5 class="btn btn-secondary">
                   Rejected
+                </h5>
+                {% else %}
+                  <h5 class="btn btn-warning">
+                  Pending
                 </h5>
                   {% endif %}
                 </td>

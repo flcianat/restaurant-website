@@ -12,10 +12,6 @@
     <title>User</title>
 
     <link
-      rel="canonical"
-      href="https://getbootstrap.com/docs/5.3/examples/sidebars/"
-    />
-    <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"
     />
@@ -31,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
 
@@ -40,99 +36,6 @@
         font-family: "Poppins", sans-serif;
         font-weight: 400;
         font-style: normal;
-      }
-
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-
-      .bd-mode-toggle {
-        z-index: 1500;
-      }
-
-      .bd-mode-toggle .dropdown-menu .active .bi {
-        display: block !important;
-      }
-
-      .nav-item {
-        list-style: none;
-      }
-
-      .nav-link {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        padding: 10px;
-        border-radius: 0.375rem;
-        margin: 5px 0;
-        color: black;
-        font-weight: 500;
-      }
-
-      .nav-link i {
-        margin-right: 15px;
-        color: black;
-      }
-
-      .nav-link.active {
-        font-weight: bold;
-        background-color: #e0e0e0;
-        color: black;
-      }
-
-      .nav-link:hover {
-        color: black;
-      }
-
-      .nav-item {
-        margin: 0 5px;
-      }
-
-      .content-section {
-        display: none;
-        padding: 10px;
-      }
-
-      .active-section {
-        display: block;
-      }
-
-      .dropdown {
-        margin-top: auto;
-      }
-
-      .sidebar-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-      }
-
-      .sidebar-header i {
-        margin-right: 10px;
-        color: black;
-      }
-
-      .sidebar-header span {
-        display: inline-block;
-        color: black;
-      }
-
-      .rounded-icon {
-        background-color: #007bff;
-        padding: 10px;
-        border-radius: 50%;
-        color: white;
       }
 
       .album-grid {
@@ -181,102 +84,21 @@
         margin-top: 10px;
         color: #555;
       }
-      .status {
-        background-color: #f0f8ff;
-        color: #0000ff;
-        padding: 5px;
-        border-radius: 5px;
-        text-align: center;
-        width: 100px;
-      }
-      .action-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 10px;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-radius: 5px;
-        overflow: hidden;
-      }
-
-      .action-buttons button {
-        padding: 8px 16px;
-        color: #ffffff;
-        font-size: 14px;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s, color 0.3s;
-        border-radius: 10px;
-      }
-
-      .action-buttons button:nth-child(1) {
-        background-color: #007bff;
-      }
-
-      .action-buttons button:nth-child(2) {
-        background-color: #28a745;
-      }
-
-      .action-buttons button:nth-child(3) {
-        background-color: #dc3545;
-      }
-
-      .action-buttons button:hover {
-        opacity: 0.8;
-      }
-
-      .action-buttons button:focus {
-        outline: none;
-      }
-
-      .box123 {
-        box-shadow: 5px 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      td {
-        border: none;
-        text-align: center;
-        padding: 10px;
-      }
-
-      tr {
-        transition: background-color 0.3s;
-      }
-
-      tr:hover {
-        background-color: #f0f0f0;
-      }
-
-      th {
-        background-color: #f2f2f2;
-        border: none;
-        text-align: center;
-        padding: 15px;
-      }
     </style>
   </head>
   <body class="poppins-regular">
-    <main class="m-5">
+    <main class="mx-5 mt-4">
+      <h3 class="fw-semibold text-center">Select menu</h3>
+      <h6 class="text-center">
+        Click Add to Cart according to desired quantity
+      </h6>
       <div class="album-grid">
         {% for menu in data_menu %}
         <div class="album-card">
           <div style="width: 150">
             <img src="{{menu[0]}}" alt="{{menu[1]}}" />
           </div>
-
           <div class="album-card-body">
-            <!-- <input type="text" name="itemID" id="itemID" value="{{menu[1]}}" hidden>
-            <input type="text" name="itemName" id="itemName" value="{{menu[2]}}" hidden>
-            <input type="text" name="quantity" id="quantity" value="{{menu[3]}}" hidden>
-            <input type="text" name="price" id="price" value="{{menu[4]}}" hidden>
-            <input type="text" name="total" id="total" value="{{menu[5]}}" hidden> -->
             <h5 class="album-card-title">{{ menu[2]}}</h5>
             <p class="album-card-text">{{ menu[3]}}</p>
             <div class="d-flex gap-2">
@@ -287,7 +109,6 @@
               {% else %}
               <p class="album-card-text badge text-bg-success">{{ menu[6]}}</p>
               {% endif %}
-
               <p class="album-card-text badge text-bg-primary">{{ menu[5]}}</p>
             </div>
             <div class="d-flex align-items-center justify-content-between">
@@ -295,20 +116,110 @@
               {% if menu[6] == "Unavailable"%}
               <button class="btn btn-primary disabled">Add to Cart</button>
               {% else %}
-              <button class="btn btn-primary">Add to Cart</button>
+              <button
+                class="btn btn-primary add-to-cart"
+                data-id="{{ menu[1] }}"
+                data-name="{{ menu[2] }}"
+                data-price="{{ menu[4] }}"
+              >
+                Add to Cart
+              </button>
               {% endif %}
             </div>
           </div>
         </div>
         {% endfor %}
       </div>
-      <div class="d-flex justify-content-end">
-        <a href="" class="btn btn-primary">Order</a>
+
+      <h4 class="fw-semibold mt-4 text-center">Order Details</h4>
+      <div class="d-flex justify-content-center mb-4">
+        <div class="d-flex align-items-center gap-3 mt-2">
+          <div class="d-flex gap-3">
+            <input
+              type="text"
+              class="form-control"
+              id="customer-name"
+              placeholder="Customer Name"
+              value="{{name}}"
+              required
+            />
+            <input
+              type="text"
+              class="form-control"
+              id="customer-location"
+              placeholder="Location"
+              required
+            />
+          </div>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-primary" id="submit-cart">Order</button>
+          </div>
+        </div>
       </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="{{ url_for('static', filename='js/jspdf.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/jspdf.plugin.autotable.min.js') }}"></script>
+    <script>
+      const cart = [];
+
+      document.querySelectorAll(".add-to-cart").forEach((button) => {
+        button.addEventListener("click", () => {
+          const id = button.getAttribute("data-id");
+          const name = button.getAttribute("data-name");
+          const price = parseFloat(button.getAttribute("data-price"));
+
+          const item = cart.find((item) => item.id === id);
+          if (item) {
+            item.quantity += 1;
+          } else {
+            cart.push({ id, name, price, quantity: 1 });
+          }
+          console.log(cart);
+        });
+      });
+
+      document.getElementById("submit-cart").addEventListener("click", () => {
+        const customerNameElement = document.getElementById("customer-name");
+        const customerLocationElement =
+          document.getElementById("customer-location");
+
+        if (!customerNameElement || !customerLocationElement) {
+          alert("Customer details are required.");
+          return;
+        }
+
+        const customerDetails = {
+          name: customerNameElement.value,
+          location: customerLocationElement.value,
+        };
+
+        const payload = {
+          cart,
+          customer: customerDetails,
+        };
+
+        fetch('{{ url_for("submit_cart") }}', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Order placed successfully!");
+              window.location.href = data.redirect;
+              cart.length = 0;
+            } else {
+              alert("There was an error placing your order.");
+              console.error("Error:", data.error);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      });
+    </script>
   </body>
 </html>

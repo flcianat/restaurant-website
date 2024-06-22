@@ -117,9 +117,13 @@
             </tr>
           </tfoot>
         </table>
+        {% if role == "admin@gmail.com" %}
         <a type="button" class="btn btn-secondary mb-2" href="/admin#orders"
           >Back</a
         >
+        {% else %}
+        <a type="button" class="btn btn-secondary mb-2" href="/user">Back</a>
+        {% endif %}
       </div>
     </div>
 
