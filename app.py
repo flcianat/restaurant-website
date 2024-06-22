@@ -177,10 +177,10 @@ def count_total_income():
 
 
 # ADMIN, USER, HOMEPAGE    
-@application.route("/homepage")
+@application.route("/")
 def homepage():
     menu = fetch_menu()
-    return render_template("homepage.html",data_menu=menu)
+    return render_template("index.html",data_menu=menu)
 
 @application.route("/user")
 def user():

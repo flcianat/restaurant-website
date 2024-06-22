@@ -570,33 +570,34 @@ th {
                 <td>{{ order[3] }}</td>
                 <td class="mx-auto">
                   {% if order[4] == 'Accept'%}
-                  <h5 class="btn btn-primary">
+                  <h5 class="btn btn-primary btn-sm">
                   Accepted
                 </h5>
                   {% elif order[4] == 'Reject' %}
-                  <h5 class="btn btn-secondary">
+                  <h5 class="btn btn-secondary btn-sm">
                   Rejected
                 </h5>
                 {% else %}
-                  <h5 class="btn btn-warning">
+                  <h5 class="btn btn-warning btn-sm">
                   Pending
                 </h5>
                   {% endif %}
                 </td>
                 <td>${{ order[5] }}</td>
+               
                 <td>
-                  <a href="/detail_order/{{ order[0] }}" class="btn btn-primary">
+                  <a href="/detail_order/{{ order[0] }}" class="btn btn-primary btn-sm">
                     Detail 
                 </a>
             
                 <form action="/accept/{{order[0]}}" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-success">
+                  <button type="submit" class="btn btn-sm btn-success">
                     <i class="bi bi-check-lg"></i>
-                  </button>
+                  </button> 
                 </form>
   
                 <form action="/reject/{{order[0]}}" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-danger">
+                  <button type="submit" class="btn btn-danger btn-sm">
                     <i class="bi bi-x-lg"></i>
                   </button>
                 </form>               
