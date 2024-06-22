@@ -195,7 +195,7 @@ def usernew():
     id = session["logged_in"]
     order=fetch_orders_user(id)
     if "logged_in" in session and session["logged_in"]:
-        return render_template("usernew.html", email=session["email"], data_menu=menu, idcustomer=session["logged_in"],
+        return render_template("usernew.html", email=session["email"], data_menu=menu, idcustomer=id,
                                data_order=order)
     else:
         return redirect(url_for("login"))
@@ -244,8 +244,27 @@ def add_menu():
         return redirect(url_for('admin')+ '#menu')
    return render_template('add_menu.html')
 
-@application.route('/add_item', methods=['POST'])
-def add_item():
+@application.route('/create_order/<int:id>', methods=['GET','POST'])
+def add_item(id):
+   if request.method == 'POST':
+        customerName = request.form['customerName']
+        Location = request.form['location']
+        status = ""
+        Amount = 0
+        customerid = id
+        current_date = datetime.now().strftime("%Y-%m-%d")
+
+        openDb()
+        sql = "INSERT INTO orders (orderDate, customerName,Location,status,Amount,customerid) VALUES (%s,%s,%s,%s, %s,%s)"
+        val = (current_date,customerName,Location,status,Amount,customerid)
+        cursor.execute(sql, val)
+        conn.commit()
+        closeDb() 
+        return redirect(url_for('select_menu',id=id))
+   return render_template('create_order.html',name=session['email'] )
+
+@application.route('/select_menu/<int:id>', methods=['GET','POST'])
+def select_menu(id):
    if request.method == 'POST':
         itemID = request.form['itemID']
         itemName = request.form['itemName']
@@ -259,8 +278,8 @@ def add_item():
         cursor.execute(sql, val)
         conn.commit()
         closeDb() 
-        return redirect(url_for('usernew')+ '#menu')
-   return render_template('usernew.html')
+        return redirect(url_for('usernew')+'#orders')
+   return render_template('select_menu.html',data_menu=fetch_menu())
 
 
 ##
